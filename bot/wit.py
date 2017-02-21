@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from wit import Wit
 from .secrets import WIT_TOKEN
-from .tasks.send_message import send_text_message, send_button_message
+from .tasks.send_message import send_text_message
 
 def first_entity_value(entities, entity):
     if entity not in entities:
@@ -19,9 +19,9 @@ def send(request, response):
     recipient_id = request["session_id"]
     text = response["text"].decode("utf-8")
     if response.get("quickreplies"):
-        buttons = list(map(lambda x: { "title": x, "content_type": "text",
-            "payload": "none" }, response["quickreplies"]))
-        send_button_message.delay(recipient_id, text, buttons)
+        quickreplies = list(map(lambda x: { "title": x, "content_type": "text",
+            "payload": "empty" }, response["quickreplies"]))
+        send_text_message.delay(recipient_id, text, quickreplies)
     else:
         send_text_message.delay(recipient_id, text)
 

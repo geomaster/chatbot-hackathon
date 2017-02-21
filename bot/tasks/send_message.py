@@ -5,8 +5,12 @@ from secrets import ACCESS_TOKEN, APP_SECRET
 bot = Bot(ACCESS_TOKEN, app_secret=APP_SECRET)
 
 @app.task
-def send_text_message(recipient_id, message):
-    bot.send_text_message(recipient_id, message)
+def send_text_message(recipient_id, message, quickreplies=None):
+    if quickreplies:
+        bot.send_message(recipient_id, { "text": message, "quick_replies":
+            quickreplies })
+    else:
+        bot.send_text_message(recipient_id, message)
 
 @app.task
 def send_message(recipient_id, message):
