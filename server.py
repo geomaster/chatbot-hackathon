@@ -29,8 +29,7 @@ def webhook_post():
                 if "message" in event.keys():
                     sender = event["sender"]["id"]
                     msg = event["message"]
-                    if msg.get("text"):
-                        handle_message.delay(sender, msg["text"])
+                    handle_message.delay(sender, msg)
 
     return "ok", 200
 
