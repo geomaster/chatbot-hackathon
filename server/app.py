@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
-from secrets import EXPECTED_VERIFY_TOKEN
+from server.secrets import EXPECTED_VERIFY_TOKEN
 import json
-from ..bot.tasks.handle_message import handle_message
+from bot.tasks.handle_message import handle_message
 
 app = Flask("pcr-test-bot")
 
