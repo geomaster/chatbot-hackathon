@@ -9,10 +9,12 @@ Jinja2==2.9.5
 kombu==4.0.2
 MarkupSafe==0.23
 packaging==16.8
+pymessenger==0.0.7.0
 pyparsing==2.1.10
 pytz==2016.10
 PyWit==0.4.0
 requests==2.13.0
+requests-toolbelt==0.7.1
 six==1.10.0
 uWSGI==2.0.14
 vine==1.1.3
