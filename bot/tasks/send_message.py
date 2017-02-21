@@ -1,6 +1,6 @@
 from ..celery import celery_app as app
 from pymessenger.bot import Bot
-from secrets import ACCESS_TOKEN, APP_SECRET
+from ..secrets import ACCESS_TOKEN, APP_SECRET
 
 bot = Bot(ACCESS_TOKEN, app_secret=APP_SECRET)
 

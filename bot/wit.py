@@ -1,10 +1,9 @@
 from __future__ import absolute_import
 from wit import Wit
 from .secrets import WIT_TOKEN
-from .tasks.send_message import send_text_message
 
 def first_entity_value(entities, entity):
-    if entity not in entities:
+    if not entities or entity not in entities:
         return None
     val = entities[entity][0]['value']
     if not val:
@@ -15,15 +14,18 @@ def del_if_exists(ctx, key):
     if key in ctx.keys():
         del ctx[key]
 
-def send(request, response):
+def send(request, response, send_message, custom_callback=None):
+    if custom_callback:
+        custom_callback(response)
+        return
+
     recipient_id = request["session_id"]
     text = response["text"].decode("utf-8")
     if response.get("quickreplies"):
-        quickreplies = list(map(lambda x: { "title": x, "content_type": "text",
-            "payload": "empty" }, response["quickreplies"]))
-        send_text_message.delay(recipient_id, text, quickreplies)
+        quickreplies = [{ "title": s, "content_type": "text", "payload": "empty" } for s in response["quickreplies"]]
+        send_message.send_text_message.delay(recipient_id, text, quickreplies)
     else:
-        send_text_message.delay(recipient_id, text)
+        send_message.send_text_message.delay(recipient_id, text)
 
 def get_packages(request):
     ctx = request["context"]
@@ -51,7 +53,11 @@ def get_phones(request):
 
     return ctx
 
-def handle_via_wit(sender_id, text):
+def handle_via_wit(sender_id, text, send_message, custom_send_callback=None):
+    def send_action(request, response):
+        send(request, response, send_message, custom_send_callback)
+
+    wit.actions["send"] = send_action
     wit.run_actions(session_id=sender_id, message=text)
 
 actions = {
