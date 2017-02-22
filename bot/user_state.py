@@ -7,7 +7,7 @@ class MockUserState:
         return self.attrs.get(key)
 
     def set_key(self, key, value):
-        self.attrs["key"] = value
+        self.attrs[key] = value
 
     def get_state_id(self):
         return self.state_id
