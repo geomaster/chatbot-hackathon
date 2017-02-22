@@ -10,7 +10,7 @@ import time
 @app.task(ignore_result=True)
 def handle_message(sender_id, msg):
     user_state = RedisUserState(sender_id, redis)
-    print(user_state.get_state_id)
+    print(user_state.get_state_id())
     print(sender_id)
     def send_fn(message):
         send_message.delay(sender_id, message)
