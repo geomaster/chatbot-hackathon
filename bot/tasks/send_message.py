@@ -7,13 +7,11 @@ bot = Bot(ACCESS_TOKEN, app_secret=APP_SECRET)
 
 @app.task(ignore_result=True)
 def send_text_message(recipient_id, message, quickreplies=None):
-    print("[{0}] Sending message at {1}".format(recipient_id, time.time()))
     if quickreplies:
         bot.send_message(recipient_id, { "text": message, "quick_replies":
             quickreplies })
     else:
         bot.send_text_message(recipient_id, message)
-    print("[{0}] Sent message at {1}".format(recipient_id, time.time()))
 
 @app.task(ignore_result=True)
 def send_message(recipient_id, message):

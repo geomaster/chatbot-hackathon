@@ -30,7 +30,6 @@ def webhook_post():
                 if "message" in event.keys():
                     sender = event["sender"]["id"]
                     msg = event["message"]
-                    print("[{0}] Dispatched task at {1}".format(msg["mid"], time.time()))
                     handle_message.delay(sender, msg)
 
     return "ok", 200

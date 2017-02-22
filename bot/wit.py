@@ -22,7 +22,6 @@ def send(request, response, send_message, custom_callback=None):
 
     recipient_id = request["session_id"]
     text = response["text"].decode("utf-8")
-    print("[{0}] Dispatching send message at {1}".format(recipient_id, time.time()))
     if response.get("quickreplies"):
         quickreplies = [{ "title": s, "content_type": "text", "payload": "empty" } for s in response["quickreplies"]]
         send_message.send_text_message.delay(recipient_id, text, quickreplies)
