@@ -22,7 +22,7 @@ task_routes = {
 }
 
 celery_app = Celery("bot",
-                    broker="amqp://localhost",
+                    broker="redis+socket:///var/run/redis/redis.sock",
                     include=["bot.tasks"],
                     task_routes=task_routes)
 
