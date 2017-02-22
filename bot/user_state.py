@@ -21,13 +21,13 @@ class RedisUserState:
         self.redis = redis
 
     def get_key(self, key):
-        return self.redis.hget(self.object_id, key)
+        return self.redis.hget(self.object_id, key).decode("utf-8")
 
     def set_key(self, key, value):
         return self.redis.hset(self.object_id, key, value)
 
     def get_state_id(self):
-        return self.redis.hget(self.object_id, "state_id")
+        return self.redis.hget(self.object_id, "state_id").decode("utf-8")
 
     def set_state_id(self, state_id):
         self.redis.hset(self.object_id, "state_id", state_id)
