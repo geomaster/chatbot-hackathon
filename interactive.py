@@ -1,4 +1,6 @@
-from bot.wit import handle_via_wit
 from console.console import console_loop
+from bot.logic import handle
+from bot.user_state import MockUserState
+from bot.wit import wit
 
-console_loop(handle_via_wit)
+console_loop(handle, wit, MockUserState())
