@@ -34,7 +34,7 @@ if [ $? -ne 0 ]; then
     bail
 fi
 
-if [ -f $DEPLOY_DIR/requirements.txt ]; then
+if [ -f $DEPLOY_DIR/server_requirements.txt ]; then
     put_log "Installing packages via pip"
     if [ -f "$DEPLOY_DIR/env/bin/pip" ]; then
         sudo -H -u pcrbot $DEPLOY_DIR/env/bin/pip install -r $DEPLOY_DIR/requirements.txt 2>&1 | tee -a $LOG_FILE
