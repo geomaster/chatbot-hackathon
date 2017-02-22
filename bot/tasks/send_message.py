@@ -1,16 +1,19 @@
 from ..celery import celery_app as app
 from pymessenger.bot import Bot
 from ..secrets import ACCESS_TOKEN, APP_SECRET
+import time
 
 bot = Bot(ACCESS_TOKEN, app_secret=APP_SECRET)
 
 @app.task
 def send_text_message(recipient_id, message, quickreplies=None):
+    print("[{0}] Sending message at {1}".format(recipient_id, time.time()))
     if quickreplies:
         bot.send_message(recipient_id, { "text": message, "quick_replies":
             quickreplies })
     else:
         bot.send_text_message(recipient_id, message)
+    print("[{0}] Sent message at {1}".format(recipient_id, time.time()))
 
 @app.task
 def send_message(recipient_id, message):

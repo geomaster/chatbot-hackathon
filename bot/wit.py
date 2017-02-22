@@ -22,6 +22,7 @@ def send(request, response, send_message, custom_callback=None):
 
     recipient_id = request["session_id"]
     text = response["text"].decode("utf-8")
+    print("[{0}] Dispatching send message at {1}".format(recipient_id, time.time()))
     if response.get("quickreplies"):
         quickreplies = [{ "title": s, "content_type": "text", "payload": "empty" } for s in response["quickreplies"]]
         send_message.send_text_message.delay(recipient_id, text, quickreplies)
@@ -59,10 +60,7 @@ def handle_via_wit(sender_id, text, send_message, custom_send_callback=None):
         send(request, response, send_message, custom_send_callback)
 
     wit.actions["send"] = send_action
-    t = time.time()
     wit.run_actions(session_id=sender_id, message=text)
-    elapsed = time.time() - t
-    print("Wit.ai communication: {0}".format(elapsed))
 
 actions = {
     'send': send,

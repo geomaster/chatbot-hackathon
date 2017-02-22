@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect
 from server.secrets import EXPECTED_VERIFY_TOKEN
 import json
+import time
 from bot.tasks.handle_message import handle_message
 
 app = Flask("pcr-test-bot")
@@ -29,6 +30,7 @@ def webhook_post():
                 if "message" in event.keys():
                     sender = event["sender"]["id"]
                     msg = event["message"]
+                    print("[{0}] Dispatched task at {1}".format(msg["mid"], time.time()))
                     handle_message.delay(sender, msg)
 
     return "ok", 200
