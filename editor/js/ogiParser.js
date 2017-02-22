@@ -62,6 +62,13 @@ function toGOJS(pcrtree) {
 				}
 			}
 		}
+
+		if(node.message.text) {
+			d[node.id].message_text = node.message.text;
+		}
+		if(node.message.quick_replies) {
+			d[node.id].quick_replies = node.message.quick_replies.map(function(x) { return x.title }).join(", ");
+		}
 	}
 
 	for(var key in d) {
