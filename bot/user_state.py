@@ -19,7 +19,7 @@ class RedisUserState:
     def __init__(self, user_id, redis):
         self.object_id = "user:{0}".format(user_id)
         self.redis = redis
-        self.set_state_id(self.object_id, "START")
+        self.set_state_id("START")
 
     def get_key(self, key):
         r = self.redis.hget(self.object_id, key)
