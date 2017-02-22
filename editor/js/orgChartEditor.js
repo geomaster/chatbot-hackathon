@@ -15,7 +15,8 @@ function init() {
               name: "(new node)",
               //title: "",
               entities_needed: "",
-              entities_bad: ""
+              entities_bad: "",
+              message: ""
             };
             return go.ClickCreatingTool.prototype.insertPart.call(this, loc);
           },
@@ -106,7 +107,7 @@ function init() {
       if (clicked !== null) {
         var thisemp = clicked.data;
         myDiagram.startTransaction("add employee");
-        var newemp = { key: getNextKey(), name: "(new node)", entities_needed: "test1", entities_bad: "test1", parent: thisemp.key };
+        var newemp = { key: getNextKey(), name: "(new node)", entities_needed: "", entities_bad: "", parent: thisemp.key };
         myDiagram.model.addNodeData(newemp);
         myDiagram.commitTransaction("add employee");
       }

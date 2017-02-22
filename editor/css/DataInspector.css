@@ -18,11 +18,23 @@ see also: dataInspector.js, dataInspector.html
 /*   #212121; /* Grey 900 */
 
 .inspector {
-  display: inline-block;
+  position: fixed;
+  z-index: 3;
+  width: 400px;
+  height: 300px;
+  bottom: -300px;
+  transition: bottom 0.5s ease;
+  right: 40px;
   font: bold 14px helvetica, sans-serif;
-  background-color: #212121; /* Grey 900 */
-  color: #F5F5F5; /* Grey 100 */
+  background-color: #eee; /* Grey 900 */
+  color: #222; /* Grey 100 */
   cursor: default;
+  border: 1px solid #999;
+  padding: 10px;
+}
+
+.inspector.active {
+  bottom: 0;
 }
 
 .inspector table {
@@ -31,15 +43,24 @@ see also: dataInspector.js, dataInspector.html
 }
 
 .inspector td, th {
-  padding: 2px;
+  box-sizing: border-box;
 }
 
+.inspector td:first-child {
+  width: 20%;
+}
+
+.inspector td:last-child {
+  width: 80%;
+}
 .inspector input {
-  background-color: #424242; /* Grey 800 */
-  color: #F5F5F5; /* Grey 100 */
+  background-color: #fff; /* Grey 800 */
+  color: #222; /* Grey 100 */
   font: bold 12px helvetica, sans-serif;
-  border: 0px;
-  padding: 2px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
 }
 
 .inspector input:disabled {
