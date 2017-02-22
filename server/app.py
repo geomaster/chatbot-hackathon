@@ -3,6 +3,10 @@ from server.secrets import EXPECTED_VERIFY_TOKEN
 import json
 import time
 from bot.tasks.handle_message import handle_message
+import sys
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 app = Flask("pcr-test-bot")
 

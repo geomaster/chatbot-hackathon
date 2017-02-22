@@ -9,7 +9,7 @@ class Graph:
         self.starting_state = 'GREETING'
         fileloc = 'bot/graph.json' # TODO: this is ugly
         with open(fileloc) as graph_file:    
-            raw_nodes = json.load(graph_file, ensure_ascii=False)['tree']
+            raw_nodes = json.load(graph_file)['tree']
         for node in raw_nodes:
             self.nodes[node['id']] = Node(node)
 
