@@ -1,31 +1,32 @@
 function fromGOJS(gotree) {
-	var pcrtree;
+	var pcrtree = {};
 	pcrtree.tree = [];
 
 	d = {};
 
 	for(var gonode of gotree.nodeDataArray) {
 
-		d[gonode].id = gonode.name;
-		d[gonode].description = node.comment;
-		d[gonode].children = [];
+		d[gonode.key] = {}
+		d[gonode.key].id = gonode.name;
+		d[gonode.key].children = [];
 
 		if(gonode.parent) {
 			for(var parentgonode of gotree.nodeDataArray) {
 				if(parentgonode.key == gonode.parent) {
-					d[parentgonode].children.push(gonode.name);
-					d[gonode].parent = parentgonode.name;
+					d[parentgonode.key].children.push(gonode.name);
+					d[gonode.key].parent = parentgonode.name;
 				}
 			}
 		}
 
-		d[gonode].entities_needed = gonode.entities_needed;
-		d[gonode].entities_refused = gonode.entities_bad;
-		d[gonode].message = gonode.message;
+		var jsonObject = JSON.parse(gonode.json);
+		for (var k in jsonObject) {
+			d[gonode.key][k] = jsonObject[k];
+		}
 	}
 
-	for(var node of d.keys()) {
-		pcrtree.tree.push(ndoe);
+	for(var key in d) {
+		pcrtree.tree.push(d[key]);
 	}
 
 	return pcrtree;
@@ -33,7 +34,7 @@ function fromGOJS(gotree) {
 
 function toGOJS(pcrtree) {
 	var cnt = 1;
-	var gotree;
+	var gotree = {};
 
 	gotree.class = "go.TreeModel";
 	gotree.nodeDataArray = [];
@@ -41,18 +42,31 @@ function toGOJS(pcrtree) {
 	d = {};
 
 	for(var node of pcrtree.tree) {
-		d[node].key = cnt++;
-		d[node].name = node.id;
-		d[node].entities_needed = node.entities_needed;
-		d[node].entities_bad = node.entities_refused;
-		d[node].message = node.message;
+
+		d[node.id] = {}
+		d[node.id].key = cnt++;
+		d[node.id].name = node.id;
+		d[node.id].json = JSON.stringify({
+			entities_needed: node.entities_needed,
+			entities_refused: node.entities_refused,
+			message: node.message,
+			description: node.description
+		}, undefined, 4);
+		d[node.id].entities_bad = node.entities_refused;
+		d[node.id].message = node.message;
 
 		if(node.parent !== null) {
 			for(var parentnode of pcrtree.tree) {
-				if(parentnode.name == node.parent) {
-					d[node].parent = d[parentnode].key;
+				if(parentnode.id == node.parent) {
+					d[node.id].parent = d[parentnode.id].key;
 				}
 			}
 		}
 	}
+
+	for(var key in d) {
+		gotree.nodeDataArray.push(d[key]);
+	}
+
+	return gotree;
 }

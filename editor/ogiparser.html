@@ -1,0 +1,9 @@
+<html>
+<body>
+<script src="js/ogiParser.js"></script>
+<textarea id="ogiText" rows="40" cols="30"></textarea>
+<textarea id="ogiText2" rows="40" cols="30"></textarea>
+<button onclick="document.getElementById('ogiText2').value=JSON.stringify(toGOJS(JSON.parse(document.getElementById('ogiText').value)), undefined, 4)">ogiParsuj</button>
+
+<button onclick="document.getElementById('ogiText').value=JSON.stringify(fromGOJS(JSON.parse(document.getElementById('ogiText2').value)), undefined, 4)">ogiOdParsuj</button>
+<script src="ogiParser"></script>
