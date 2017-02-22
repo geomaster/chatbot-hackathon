@@ -7,9 +7,9 @@ from sys import stdout
 import sys
 
 def print_json(json_msg):
-    resp_json = json.dumps(json_msg, indent=2, ensure_ascii=False)
-    colorful_json = highlight(resp_json.encode('utf-8'), lexers.JsonLexer(), formatters.TerminalFormatter())
-    print(colorful_json.encode('utf-8').decode(sys.stdout.encoding))
+    resp_json = json.dumps(json_msg, indent=2, ensure_ascii=True)
+    colorful_json = highlight(resp_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+    print(colorful_json)
 
 def console_loop(handle, wit, user_state):
     while True:
@@ -17,7 +17,6 @@ def console_loop(handle, wit, user_state):
         stdout.write("[{0}]".format(colored(state_id, 'cyan')))
         q = input("> ").rstrip()
 
-        q = q.encode(sys.stdin.encoding).decode('utf-8')
         if q == "quit":
             break
 
