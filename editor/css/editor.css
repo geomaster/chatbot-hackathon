@@ -1,36 +1,53 @@
-* {
-	font-family: serif;
+#controls * {
+    font-family: sans-serif;
 }
 
 #myDiagramDiv {
-	position: absolute; left: 0; top: 0; right: 0; bottom: 0;
-	background: white;
+    position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+    background: white;
 }
 
 #controls {
-	z-index: 10;
-	position: fixed;
-	width: 100px;
-	height: 50px;
-	padding: 10px;
-	right: 10px;
-	top: 10px;
+    z-index: 10;
+    position: fixed;
+    height: 50px;
+    padding: 10px;
+    right: 10px;
+    top: 10px;
+}
+
+#controls a {
+    display: inline-block;
+    background-color: #aa0000;
+    color: white;
+    padding: 10px;
+    border-radius: 7px;
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+#monaco {
+}
+
+#controls a:hover {
+    background-color: #ee0000;
 }
 
 #jsonGui {
-	background: #ccc;
-	position: fixed;
-	z-index: 40;
-	width: 500px;
-	height: 400px;
-	bottom: -400px;
-	left: 40px;
-	box-sizing: border-box;
-	padding: 20px;
-	
-  transition: bottom 0.5s ease;
+    background: #ccc;
+    position: fixed;
+    z-index: 40;
+    width: 500px;
+    height: 400px;
+    bottom: -400px;
+    left: 40px;
+    box-sizing: border-box;
+    padding: 20px;
+    transition: bottom 0.5s ease;
 }
 
 #jsonGui.active {
-	bottom: 0;
+    bottom: 0;
 }
