@@ -17,4 +17,5 @@ def handle_message(sender_id, msg):
 
     meaning = wit.message(msg["text"])
     new_state = handle(user_state, meaning, send_fn)
+    print("new state {0}".format(new_state))
     user_state.set_state_id(new_state)
