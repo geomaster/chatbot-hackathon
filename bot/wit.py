@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from wit import Wit
 from .secrets import WIT_TOKEN
+import time
 
 def first_entity_value(entities, entity):
     if not entities or entity not in entities:
@@ -58,7 +59,10 @@ def handle_via_wit(sender_id, text, send_message, custom_send_callback=None):
         send(request, response, send_message, custom_send_callback)
 
     wit.actions["send"] = send_action
+    t = time.time()
     wit.run_actions(session_id=sender_id, message=text)
+    elapsed = time.time() - t
+    print("Wit.ai communication: {0}".format(elapsed))
 
 actions = {
     'send': send,
@@ -67,4 +71,3 @@ actions = {
 }
 
 wit = Wit(access_token=WIT_TOKEN, actions=actions)
-
