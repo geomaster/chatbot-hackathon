@@ -1,5 +1,6 @@
 import json
 import uuid
+import traceback
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from sys import stdout
@@ -25,5 +26,5 @@ def console_loop(handle, wit, user_state):
             print("==Bot message:")
             new_state_id = handle(user_state, meaning, print_json)
             user_state.set_state_id(new_state_id)
-        except Exception:
-            print(colored("Error contacting Wit.", "red"))
+        except Exception as e:
+            print(colored("Error while responding: ", "red"), traceback.print_exc())

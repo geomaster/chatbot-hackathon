@@ -1,21 +1,25 @@
-def handle(user_state, meaning, send_fn):
-    s = user_state.get_state_id()
-    send_fn({
-        "text": "Hello world from state_transition! You are in state" \
-            " {0}".format(s),
-        "quick_replies": [{
-            "content_type": "text",
-            "title": "yo",
-            "payload": "empty"
-        }, {
-            "content_type": "text",
-            "title": "oyy",
-            "payload": "empty"
-        }, {
-            "content_type": "text",
-            "title": "xD",
-            "payload": "empty"
-        }]
-    })
+from .graph import Graph
 
-    return s == "testStateTrue" and "testStateFalse" or "testStateTrue"
+def get_msg_info(meaning):
+    msg_info = dict()
+    for entity, val_list in meaning['entities'].items():
+        for val in val_list:
+            if not entity in msg_info:
+                msg_info[entity] = []
+            msg_info[entity].append(val['value'])
+    return msg_info
+
+def handle(user_state, meaning, send_fn):
+    # TODO: quick reply from response, skip wit
+    node_id = user_state.get_state_id()
+    valid_children = []
+    msg_info = get_msg_info(meaning)
+    for child_node_id in graph[node_id].children:
+        if graph.can_move(node_id, child_node_id, msg_info):
+            valid_children.append(child_node_id)
+    # TODO: fix this to consider all valid children
+    next_child = valid_children[0]
+    send_fn(graph[next_child].message)
+    return next_child
+
+graph = Graph()

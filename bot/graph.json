@@ -1,0 +1,133 @@
+{
+  "tree": [
+    {
+      "id": "START",
+      "description": "Pocetno stanje",
+      "parent": null,
+      "children": [
+        "GREETING"
+      ],
+      "entities_needed": {
+
+      },
+      "entities_refused": {
+
+      },
+      "message": {
+
+      }
+    },
+    {
+      "id": "GREETING",
+      "description": "Pozdrav",
+      "parent": "START",
+      "children": [
+        "ABOUT_TELENOR",
+        "SERVICES",
+        "ABOUT_BOT"
+      ],
+      "entities_needed": {
+        "intent": [
+            "greeting"
+        ]
+      },
+      "entities_refused": {
+
+      },
+      "message": {
+        "text": "Ćao, ja sam Teša, Telenorov bot! Kako mogu da ti pomognem?",
+        "quick_replies": [
+          {
+            "content_type": "text",
+            "title": "Šta je Telenor?",
+            "payload": "empty"
+          },
+          {
+            "content_type": "text",
+            "title": "Ko je Teša?",
+            "payload": "empty"
+          },
+          {
+            "content_type": "text",
+            "title": "Koje usluge nudi Telenor?",
+            "payload": "empty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ABOUT_TELENOR",
+      "description": "O Telenoru",
+      "parent": "GREETING",
+      "children": [
+
+      ],
+      "entities_needed": {
+        "intent": [
+            "about_telenor"
+        ]
+      },
+      "entities_refused": {
+
+      },
+      "message": {
+        "text": "Naša industrija ima važnu ulogu u životu ljudi. Telenorova vizija, misija i vrednosti izražavaju pravac u kojem se krećemo i ulogu koju ćemo imati u promeni ljudskih života, i podršci društvu da raste i napreduje."
+      }
+    },
+    {
+      "id": "ABOUT_BOT",
+      "description": "O Botu",
+      "parent": "GREETING",
+      "children": [
+
+      ],
+      "entities_needed": {
+        "intent": [
+            "about_bot"
+        ]
+      },
+      "entities_refused": {
+
+      },
+      "message": {
+        "text": "Ja sam Teša peder."
+      }
+    },
+    {
+      "id": "SERVICES",
+      "description": "Naše usluge",
+      "parent": "GREETING",
+      "children": [
+
+      ],
+      "entities_needed": {
+        "intent": [
+            "services"
+        ]
+      },
+      "entities_refused": {
+
+      },
+      "message": {
+        "text": "Odaberi kategoriju koja te zanima",
+      	"quick_replies": [
+          {
+            "content_type": "text",
+            "title": "Privatni korisnici",
+            "payload": "empty"
+          },
+          {
+            "content_type": "text",
+            "title": "Biznis korisnici",
+            "payload": "empty"
+          },
+          {
+            "content_type": "text",
+            "title": "Telenor banka",
+            "payload": "empty"
+          }
+        ]
+      }
+    }
+  ]
+}

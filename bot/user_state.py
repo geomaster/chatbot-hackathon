@@ -1,6 +1,6 @@
 class MockUserState:
     def __init__(self):
-        self.state_id = None
+        self.state_id = "START" # TODO: constants.py?
         self.attrs = {}
 
     def get_key(self, key):
@@ -19,6 +19,7 @@ class RedisUserState:
     def __init__(self, user_id, redis):
         self.object_id = "user:{0}".format(user_id)
         self.redis = redis
+        self.set_state_id(self.object_id, "START")
 
     def get_key(self, key):
         return self.redis.hget(self.object_id, key).decode("utf-8")
