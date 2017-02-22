@@ -4,8 +4,8 @@ from pygments import highlight, lexers, formatters
 from termcolor import colored
 from sys import stdout
 
-def send_callback(msg):
-    resp_json = json.dumps(msg, indent=2, ensure_ascii=False)
+def print_json(json_msg):
+    resp_json = json.dumps(json_msg, indent=2, ensure_ascii=False)
     colorful_json = highlight(resp_json, lexers.JsonLexer(), formatters.TerminalFormatter())
     print(colorful_json)
 
@@ -19,8 +19,11 @@ def console_loop(handle, wit, user_state):
             break
 
         try:
+            print("==Wit response:")
             meaning = wit.message(q)
-            new_state_id = handle(user_state, meaning, send_callback)
+            print_json(meaning)
+            print("==Bot message:")
+            new_state_id = handle(user_state, meaning, print_json)
             user_state.set_state_id(new_state_id)
         except Exception:
             print(colored("Error contacting Wit.", "red"))
