@@ -14,6 +14,7 @@ function init() {
                     key: getNextKey(), // assign the key based on the number of nodes
                     name: "(new node)",
                     message_text: "",
+                    quick_replies: "",
                     json: "{}"
                 };
                 return go.ClickCreatingTool.prototype.insertPart.call(this, loc);
@@ -106,7 +107,8 @@ function init() {
             if (clicked !== null) {
                 var thisemp = clicked.data;
                 myDiagram.startTransaction("add employee");
-                var newemp = { key: getNextKey(), name: "(new node)", message_text: "", parent: thisemp.key, json: "{}" };
+                var newemp = { key: getNextKey(), name: "(new node)", message_text: "", 
+                    quick_replies: "", parent: thisemp.key, json: "{\"entities_needed\": {}, \"entities_refused\": {}, \"message\": {}, \"description\": \"\" }" };
                 myDiagram.model.addNodeData(newemp);
                 myDiagram.commitTransaction("add employee");
             }
@@ -215,6 +217,9 @@ function init() {
                     $(go.TextBlock, textStyle(),
                         { row: 3, column: 0 },
                         new go.Binding("text", "message_text", function(v) {return v;})),
+                                            $(go.TextBlock, textStyle(),
+                        { row: 5, column: 0 },
+                        new go.Binding("text", "quick_replies", function(v) {return v;})),
                     $(go.TextBlock, textStyle(),
                         { name: "boss", row: 2, column: 3, }, // we include a name so we can access this TextBlock when deleting Nodes/Links
                         new go.Binding("text", "parent", function(v) {return "";})),
@@ -296,7 +301,7 @@ function init() {
         $(go.Shape, { strokeWidth: 4, stroke: "#00a4a4" }));  // the link shape
 
         // read in the JSON-format data from the "mySavedModel" element
-        load();
+        //load();
 }
 
 function toggel/*tm*/(a, b, c) {
@@ -310,9 +315,13 @@ function toggelClass/*tm*/(elemId, a, b) {
 
 // Show the diagram's model in JSON format
 function save() {
-    document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+    text = JSON.stringify(fromGOJS(JSON.parse(myDiagram.model.toJson())));
+    document.getElementById("mySavedModel").value = text;
     myDiagram.isModified = false;
 }
 function load() {
-    myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+    text = document.getElementById("mySavedModel").value;
+    myDiagram.model = go.Model.fromJson(toGOJS(JSON.parse(text)));
 }
+
+
