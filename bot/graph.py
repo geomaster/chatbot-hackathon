@@ -2,14 +2,13 @@ import os
 import sys
 import json
 from .node import Node
-
 class Graph:
     def __init__(self):
         self.nodes = dict()
         self.starting_state = 'GREETING'
         fileloc = 'bot/graph.json' # TODO: this is ugly
         with open(fileloc) as graph_file:    
-            raw_nodes = json.load(graph_file)['tree']
+            raw_nodes = json.load(graph_file, encoding="utf-8")['tree']
         for node in raw_nodes:
             self.nodes[node['id']] = Node(node)
 

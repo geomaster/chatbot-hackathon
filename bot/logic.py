@@ -18,8 +18,12 @@ def handle(user_state, meaning, send_fn):
         if graph.can_move(node_id, child_node_id, msg_info):
             valid_children.append(child_node_id)
     # TODO: fix this to consider all valid children
-    next_child = valid_children[0]
-    send_fn(graph[next_child].message)
-    return next_child
+    if len(valid_children) > 0:
+        next_child = valid_children[0]
+        send_fn(graph[next_child].message)
+        return next_child
+    else:
+        send_fn({ "text": "Nemam pojma" })
+        return node_id
 
 graph = Graph()
