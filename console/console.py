@@ -4,18 +4,27 @@ import traceback
 from pygments import highlight, lexers, formatters
 from termcolor import colored
 from sys import stdout
+from prompt_toolkit import prompt
+from prompt_toolkit.history import InMemoryHistory
 import sys
 
+# todo: 2nivoa ispod
+# todo: prethodno stanje cuvati
+# todo: templates
+# todo: fallback message
+# todo: suggestion:true izbaci
+
 def print_json(json_msg):
-    resp_json = json.dumps(json_msg, indent=2, ensure_ascii=True)
+    resp_json = json.dumps(json_msg, indent=2, ensure_ascii=False)
     colorful_json = highlight(resp_json, lexers.JsonLexer(), formatters.TerminalFormatter())
     print(colorful_json)
 
 def console_loop(handle, wit, user_state):
+    history = InMemoryHistory()
     while True:
         state_id = user_state.get_state_id() or "none"
         stdout.write("[{0}]".format(colored(state_id, 'cyan')))
-        q = input("> ").rstrip()
+        q = prompt("> ", history=history).rstrip()
 
         if q == "quit":
             break
