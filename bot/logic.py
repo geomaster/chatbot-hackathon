@@ -33,10 +33,10 @@ def handle(user_state, meaning, send_fn):
     if meaning['_text'] and meaning['_text'][0] == '`':
         debug = handle_debug_command(node, meaning['_text'])
         if debug:
-            send_fn(debug[1])
+            send_fn({ "text": debug[1] })
             return debug[0]
         else:
-            send_fn("Nemam pojma tu debug komandu")
+            send_fn({ "text": "Nemam pojma tu debug komandu" })
             return node
     wit_info = get_wit_info(meaning)
     valid_next_nodes = graph.get_next(node, wit_info)
