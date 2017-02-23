@@ -26,11 +26,11 @@ class Graph:
                     return False
         for entity, val_list in self.nodes[node_to].entities_refused.items():
             if len(val_list) == 0:
-                if entity in msg_info:
+                if entity in wit_info:
                     return False
             else:
                 for val in val_list:
-                    if entity in msg_info and val in msg_info[entity]:
+                    if entity in wit_info and val in wit_info[entity]:
                         return False
         return True
 
