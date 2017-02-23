@@ -108,7 +108,7 @@ function init() {
                 var thisemp = clicked.data;
                 myDiagram.startTransaction("add employee");
                 var newemp = { key: getNextKey(), name: "(new node)", message_text: "", 
-                    quick_replies: "", parent: thisemp.key, json: "{\"entities_needed\": {}, \"entities_refused\": {}, \"message\": {}, \"description\": \"\" }" };
+                    quick_replies: "", parent: thisemp.key, json: JSON.stringify(JSON.parse("{\"entities_needed\": {},\n \"entities_refused\": {},\n \"message\": {},\n \"description\": \"\" }"), null, 4)};
                 myDiagram.model.addNodeData(newemp);
                 myDiagram.commitTransaction("add employee");
             }
@@ -315,7 +315,7 @@ function toggelClass/*tm*/(elemId, a, b) {
 
 // Show the diagram's model in JSON format
 function save() {
-    text = JSON.stringify(fromGOJS(JSON.parse(myDiagram.model.toJson())));
+    text = JSON.stringify(fromGOJS(JSON.parse(myDiagram.model.toJson())), null, 4);
     document.getElementById("mySavedModel").value = text;
     myDiagram.isModified = false;
 }

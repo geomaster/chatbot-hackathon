@@ -25,6 +25,8 @@ function fromGOJS(gotree) {
 				}
 			}
 		}
+		else
+			d[gonode.key].parent = null;
 	}
 
 	for(var key in d) {
