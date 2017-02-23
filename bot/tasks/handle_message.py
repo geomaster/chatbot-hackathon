@@ -14,6 +14,11 @@ def handle_message(sender_id, msg):
     def send_fn(message):
         send_message.delay(sender_id, message)
 
-    meaning = wit.message(msg["text"])
+    if not msg["text"].startswith("`"):
+        meaning = wit.message(msg["text"])
+    else:
+        # Don't spam Wit with debug commands
+        meaning = { "_text": msg["text"] }
+
     new_state_id = handle(user_state, meaning, send_fn)
     user_state.set_state_id(new_state_id)

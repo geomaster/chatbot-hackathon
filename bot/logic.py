@@ -30,7 +30,7 @@ def handle(user_state, meaning, send_fn):
         Node ID of a state the user moved to.
     """
     node = user_state.get_state_id()
-    if meaning['_text'] and meaning['_text'][0] == '`':
+    if meaning['_text'] and meaning['_text'].startswith('`'):
         debug = handle_debug_command(node, meaning['_text'])
         if debug:
             send_fn({ "text": debug[1] })
