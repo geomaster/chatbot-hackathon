@@ -10,6 +10,13 @@ function fromGOJS(gotree) {
 		d[gonode.key].id = gonode.name;
 		d[gonode.key].children = [];
 
+		var jsonObject = JSON.parse(gonode.json);
+		for (var k in jsonObject) {
+			d[gonode.key][k] = jsonObject[k];
+		}
+	}
+
+	for(var gonode of gotree.nodeDataArray) {
 		if(gonode.parent) {
 			for(var parentgonode of gotree.nodeDataArray) {
 				if(parentgonode.key == gonode.parent) {
@@ -17,11 +24,6 @@ function fromGOJS(gotree) {
 					d[gonode.key].parent = parentgonode.name;
 				}
 			}
-		}
-
-		var jsonObject = JSON.parse(gonode.json);
-		for (var k in jsonObject) {
-			d[gonode.key][k] = jsonObject[k];
 		}
 	}
 
@@ -42,7 +44,6 @@ function toGOJS(pcrtree) {
 	d = {};
 
 	for(var node of pcrtree.tree) {
-
 		d[node.id] = {}
 		d[node.id].key = cnt++;
 		d[node.id].name = node.id;
@@ -55,19 +56,21 @@ function toGOJS(pcrtree) {
 		d[node.id].entities_bad = node.entities_refused;
 		d[node.id].message = node.message;
 
+		if(node.message.text) {
+			d[node.id].message_text = node.message.text;
+		}
+		if(node.message.quick_replies) {
+			d[node.id].quick_replies = node.message.quick_replies.map(function(x) { return ">" + x.title }).join("\n");
+		}
+	}
+
+	for(var node of pcrtree.tree) {
 		if(node.parent !== null) {
 			for(var parentnode of pcrtree.tree) {
 				if(parentnode.id == node.parent) {
 					d[node.id].parent = d[parentnode.id].key;
 				}
 			}
-		}
-
-		if(node.message.text) {
-			d[node.id].message_text = node.message.text;
-		}
-		if(node.message.quick_replies) {
-			d[node.id].quick_replies = node.message.quick_replies.map(function(x) { return x.title }).join(", ");
 		}
 	}
 

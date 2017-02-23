@@ -68,7 +68,7 @@
                         }
                         if (json.message.quick_replies) {
                             window.myDiagram.model.setDataProperty(window._selected,
-                            "quick_replies", json.message.quick_replies.map(function(x) { return x.title }).join(", "));
+                            "quick_replies", json.message.quick_replies.map(function(x) { return ">" + x.title }).join("\n"));
                         }
                     } catch (e) {
                     }
