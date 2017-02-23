@@ -6,7 +6,7 @@ class Graph:
     def __init__(self):
         self.nodes = dict()
         graph_file_loc = 'bot/graph.json'
-        with open(graph_file_loc, encoding='utf-8') as graph_file:    
+        with open(graph_file_loc, encoding='utf-8') as graph_file:
             raw_nodes = json.load(graph_file)['tree']
         for node in raw_nodes:
             self.nodes[node['id']] = Node(node)
@@ -36,6 +36,10 @@ class Graph:
 
     def get_next(self, node_from, wit_info):
         valid_next_nodes = []
+        if not self.nodes.get(node_from):
+            # Unknown state
+            return []
+
         for node_to in self.nodes[node_from].children:
             if self.is_consistent(node_to, wit_info):
                 valid_next_nodes.append(node_to)
