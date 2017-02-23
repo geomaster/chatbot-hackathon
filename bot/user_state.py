@@ -1,6 +1,8 @@
+from .constants import *
+
 class MockUserState:
     def __init__(self):
-        self.state_id = "START" # TODO: constants.py?
+        self.state_id = STARTING_NODE_ID
         self.attrs = {}
 
     def get_key(self, key):
@@ -29,7 +31,7 @@ class RedisUserState:
 
     def get_state_id(self):
         r = self.redis.hget(self.object_id, "state_id")
-        return r and r.decode("utf-8") or "START"
+        return r and r.decode("utf-8") or STARTING_NODE_ID
 
     def set_state_id(self, state_id):
         self.redis.hset(self.object_id, "state_id", state_id)

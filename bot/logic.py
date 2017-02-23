@@ -1,29 +1,53 @@
 from .graph import Graph
 
-def get_msg_info(meaning):
-    msg_info = dict()
+def get_wit_info(meaning):
+    """Extract valuable information from a Wit meaning object."""
+    wit_info = dict()
     for entity, val_list in meaning['entities'].items():
         for val in val_list:
-            if not entity in msg_info:
-                msg_info[entity] = []
-            msg_info[entity].append(val['value'])
-    return msg_info
+            if not entity in wit_info:
+                wit_info[entity] = []
+            wit_info[entity].append(val['value'])
+    return wit_info
+
+def handle_debug_command(node, msg):
+    if msg == '`state?':
+        return (node, node or 'None')
+    elif msg.startswith('`state='):
+        new_node = msg[7:]
+        return (new_node, 'Set {0}'.format(new_node))
+    return None
 
 def handle(user_state, meaning, send_fn):
-    # TODO: quick reply from response, skip wit
-    node_id = user_state.get_state_id()
-    valid_children = []
-    msg_info = get_msg_info(meaning)
-    for child_node_id in graph[node_id].children:
-        if graph.can_move(node_id, child_node_id, msg_info):
-            valid_children.append(child_node_id)
-    # TODO: fix this to consider all valid children
-    if len(valid_children) > 0:
-        next_child = valid_children[0]
-        send_fn(graph[next_child].message)
-        return next_child
-    else:
+    """Do the appropriate state transition for an incoming message.
+
+    Args:
+        user_state: A UserState object tied to the user that sent the message. 
+        meaning: Wit MessageAPI interpretation of the message. 
+        send_fn: A callback used to output bot's response.
+
+    Returns:
+        Node ID of a state the user moved to.
+    """
+    node = user_state.get_state_id()
+    if meaning['_text'] and meaning['_text'][0] == '`':
+        debug = handle_debug_command(node, meaning['_text'])
+        if debug:
+            send_fn(debug[1])
+            return debug[0]
+        else:
+            raise Exception("Invalid debug command")
+    wit_info = get_wit_info(meaning)
+    valid_next_nodes = graph.get_next(node, wit_info)
+    if len(valid_next_nodes) == 1:
+        next_node = valid_next_nodes[0]
+        send_fn(graph[next_node].message)
+        return next_node
+    elif len(valid_next_nodes) == 0:
         send_fn({ "text": "Nemam pojma" })
+        return node_id
+    else:
+        send_fn({ "text": "Nemam pojma (vise resenja)" })
         return node_id
 
 graph = Graph()

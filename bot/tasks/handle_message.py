@@ -11,18 +11,9 @@ import time
 def handle_message(sender_id, msg):
     user_state = RedisUserState(sender_id, redis)
 
-    if msg.get("text") == "`state?":
-        send_message.delay(sender_id, { "text": user_state.get_state_id() or "None" })
-        return
-    elif msg.get("text").startswith("`state="):
-        new_state = msg.get("text")[7:]
-        user_state.set_state_id(new_state)
-        send_message.delay(sender_id, { "text": "Set {0}".format(new_state) })
-        return
-
     def send_fn(message):
         send_message.delay(sender_id, message)
 
     meaning = wit.message(msg["text"])
-    new_state = handle(user_state, meaning, send_fn)
-    user_state.set_state_id(new_state)
+    new_state_id = handle(user_state, meaning, send_fn)
+    user_state.set_state_id(new_state_id)

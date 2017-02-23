@@ -5,9 +5,8 @@ from .node import Node
 class Graph:
     def __init__(self):
         self.nodes = dict()
-        self.starting_state = 'GREETING'
-        fileloc = 'bot/graph.json' # TODO: this is ugly
-        with open(fileloc, encoding="utf-8") as graph_file:    
+        graph_file_loc = 'bot/graph.json'
+        with open(graph_file_loc, encoding='utf-8') as graph_file:    
             raw_nodes = json.load(graph_file)['tree']
         for node in raw_nodes:
             self.nodes[node['id']] = Node(node)
@@ -18,19 +17,14 @@ class Graph:
         else:
             raise AttributeError
 
-    def can_move(self, id_from, id_to, msg_info):
-        # TODO: consider whole subtree
-        if not id_to in self.nodes[id_from].children:
-            return False
-        # needed states?
-        for entity, val_list in self.nodes[id_to].entities_needed.items():
-            if not entity in msg_info:
+    def is_consistent(self, node_to, wit_info):
+        for entity, val_list in self.nodes[node_to].entities_needed.items():
+            if not entity in wit_info:
                 return False
             for val in val_list:
-                if not val in msg_info[entity]:
+                if not val in wit_info[entity]:
                     return False
-        # refused states?
-        for entity, val_list in self.nodes[id_to].entities_refused.items():
+        for entity, val_list in self.nodes[node_to].entities_refused.items():
             if len(val_list) == 0:
                 if entity in msg_info:
                     return False
@@ -39,3 +33,10 @@ class Graph:
                     if entity in msg_info and val in msg_info[entity]:
                         return False
         return True
+
+    def get_next(self, node_from, wit_info):
+        valid_next_nodes = []
+        for node_to in self.nodes[node_from].children:
+            if self.is_consistent(node_to, wit_info):
+                valid_next_nodes.append(node_to)
+        return valid_next_nodes
