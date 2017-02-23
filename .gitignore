@@ -2,3 +2,4 @@ __pycache__/
 env/
 in
 node_modules/
+venv2/
