@@ -36,7 +36,8 @@ def handle(user_state, meaning, send_fn):
             send_fn(debug[1])
             return debug[0]
         else:
-            raise Exception("Invalid debug command")
+            send_fn("Nemam pojma tu debug komandu")
+            return node
     wit_info = get_wit_info(meaning)
     valid_next_nodes = graph.get_next(node, wit_info)
     if len(valid_next_nodes) == 1:
@@ -45,9 +46,9 @@ def handle(user_state, meaning, send_fn):
         return next_node
     elif len(valid_next_nodes) == 0:
         send_fn({ "text": "Nemam pojma" })
-        return node_id
+        return node
     else:
         send_fn({ "text": "Nemam pojma (vise resenja)" })
-        return node_id
+        return node
 
 graph = Graph()
