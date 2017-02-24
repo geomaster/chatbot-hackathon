@@ -20,7 +20,7 @@ function bail {
 
 read oldrev newrev
 put_log "Deploying rev $newrev"
-git --work-tree=$DEPLOY_DIR --git-dir=/home/git/pcr-test-bot.git checkout -f prod 2>&1 | tee -a $LOG_FILE
+git --work-tree=$DEPLOY_DIR --git-dir=/home/git/pcr-test-bot.git checkout -f master 2>&1 | tee -a $LOG_FILE
 if [ $? -ne 0 ]; then
     put_log "Git failed, bailing!"
     bail
@@ -52,6 +52,22 @@ else
     bail
 fi
 
+if [ -d $DEPLOY_DIR/editor ]; then
+    pushd $DEPLOY_DIR/editor
+
+    put_log "Running npm install"
+    sudo -H -u pcrbot npm install
+    if [ $? -ne 0 ]; then
+        put_log "npm install failed!"
+    fi
+
+    put_log "Building editor js"
+    sudo -H -u pcrbot npm run build
+    if [ $? -ne 0 ]; then
+        put_log "npm run build failed!"
+    fi
+fi
+
 put_log "Restarting the Flask server"
 sudo systemctl restart pcrbot 2>&1 | tee -a $LOG_FILE
 if [ $? -ne 0 ]; then
@@ -62,6 +78,12 @@ put_log "Restarting Celery workers"
 sudo systemctl restart celery 2>&1 | tee -a $LOG_FILE
 if [ $? -ne 0 ]; then
     put_log "Celery restart failed!"
+fi
+
+put_log "Restarting Node"
+sudo systemctl restart pcreditor 2>&1 | tee -a $LOG_FILE
+if [ $? -ne 0 ]; then
+    put_log "Node restart failed!"
 fi
 
 put_log "Rev $newrev deployed"
