@@ -43,6 +43,8 @@ class Graph:
 
     def get_next(self, node_from, wit_info):
         valid_next_nodes = []
+        if not node_from in self.nodes:
+            return []
         for node_to in self.nodes[node_from].children:
             if self.is_consistent(node_to, wit_info):
                 valid_next_nodes.append(node_to)
