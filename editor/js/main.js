@@ -383,7 +383,7 @@ function init(treeData) {
             let data = JSON.stringify(normalize(treeInfo["START"].obj), undefined, 4);
             $.ajax({
                 type: "PUT",
-                url: "/api/graph.json",
+                url: "api/graph.json",
                 contentType: "application/json",
                 data
             }).then((resp) => {
@@ -467,7 +467,7 @@ function updateTreeInfo(parent, root) {
     }
 }
 
-d3.json("/api/graph.json", function(err, treeData) {
+d3.json("api/graph.json", function(err, treeData) {
     let denom = denormalize(treeData);
     updateTreeInfo(null, denom);
     init(denom);
