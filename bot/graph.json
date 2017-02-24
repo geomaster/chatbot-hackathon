@@ -1,35 +1,55 @@
 {
     "tree": [
         {
-            "id": "NEW_NODE_2",
-            "entities_needed": {
-                "intent": [
-                    "some_intent"
-                ]
-            },
+            "id": "START",
+            "children": [
+                "GREETING"
+            ],
+            "entities_needed": {},
             "entities_refused": {},
             "message": {},
-            "description": "",
-            "parent": "NEW_NODE_1",
-            "children": []
+            "description": "Pocetno stanje",
+            "parent": null
         },
         {
-            "id": "NEW_NODE_1",
+            "id": "GREETING",
+            "children": [
+                "ABOUT_TELENOR",
+                "ABOUT_BOT",
+                "SERVICES"
+            ],
             "entities_needed": {
                 "intent": [
-                    "some_intent"
+                    "greeting"
                 ]
             },
             "entities_refused": {},
-            "message": {},
-            "description": "",
-            "parent": "ABOUT_TELENOR",
-            "children": [
-                "NEW_NODE_2"
-            ]
+            "message": {
+                "text": "Ćao, ja sam Teša, Telenorov bot! Kako mogu da ti pomognem?",
+                "quick_replies": [
+                    {
+                        "content_type": "text",
+                        "title": "Šta je Telenor?",
+                        "payload": "empty"
+                    },
+                    {
+                        "content_type": "text",
+                        "title": "Ko je Teša?",
+                        "payload": "empty"
+                    },
+                    {
+                        "content_type": "text",
+                        "title": "Koje usluge nudite?",
+                        "payload": "empty"
+                    }
+                ]
+            },
+            "description": "Pozdrav",
+            "parent": "START"
         },
         {
             "id": "ABOUT_TELENOR",
+            "children": [],
             "entities_needed": {
                 "intent": [
                     "about_telenor"
@@ -40,13 +60,11 @@
                 "text": "Naša industrija ima važnu ulogu u životu ljudi. Telenorova vizija, misija i vrednosti izražavaju pravac u kojem se krećemo i ulogu koju ćemo imati u promeni ljudskih života, i podršci društvu da raste i napreduje."
             },
             "description": "O Telenoru",
-            "parent": "GREETING",
-            "children": [
-                "NEW_NODE_1"
-            ]
+            "parent": "GREETING"
         },
         {
             "id": "ABOUT_BOT",
+            "children": [],
             "entities_needed": {
                 "intent": [
                     "about_bot"
@@ -57,179 +75,52 @@
                 "text": "Ja sam Teša peder."
             },
             "description": "O Botu",
-            "parent": "GREETING",
-            "children": []
+            "parent": "GREETING"
         },
         {
-            "id": "PHONES_BY_BRAND",
-            "entities_needed": {
-                "phone_brand": []
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Evo ti telefone mareke {phone_brand}! Prederu!"
-            },
-            "description": "",
-            "parent": "PHONES",
-            "children": []
-        },
-        {
-            "id": "PHONES",
-            "entities_needed": {
-                "intent": [
-                    "phones"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Koje marke buraz?"
-            },
-            "description": "",
-            "parent": "DEVICES",
+            "id": "SERVICES",
             "children": [
-                "PHONES_BY_BRAND"
-            ]
-        },
-        {
-            "id": "TABLETS",
+                "PRIVATE_USERS",
+                "BUSINESS_USERS",
+                "TELENOR_BANK"
+            ],
             "entities_needed": {
                 "intent": [
-                    "tablets"
+                    "services"
                 ]
             },
             "entities_refused": {},
             "message": {
-                "text": "Imamo ove neke pederske tablete: ..."
-            },
-            "description": "",
-            "parent": "DEVICES",
-            "children": []
-        },
-        {
-            "id": "MODEMS",
-            "entities_needed": {
-                "intent": [
-                    "modems"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Imamo ove neke fegetske modeme: ..."
-            },
-            "description": "",
-            "parent": "DEVICES",
-            "children": []
-        },
-        {
-            "id": "DEVICES",
-            "entities_needed": {
-                "intent": [
-                    "devices"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Koji uredjaji?",
+                "text": "Odaberi kategoriju koja te zanima",
                 "quick_replies": [
                     {
                         "content_type": "text",
-                        "title": "Telefoni",
+                        "title": "Privatni korisnici",
                         "payload": "empty"
                     },
                     {
                         "content_type": "text",
-                        "title": "Tableti",
+                        "title": "Biznis korisnici",
                         "payload": "empty"
                     },
                     {
                         "content_type": "text",
-                        "title": "Modemi",
+                        "title": "Telenor banka",
                         "payload": "empty"
                     }
                 ]
             },
-            "description": "",
-            "parent": "PRIVATE_USERS333",
+            "description": "Naše usluge",
+            "parent": "GREETING"
+        },
+        {
+            "id": "PRIVATE_USERS",
             "children": [
-                "PHONES",
-                "TABLETS",
-                "MODEMS"
-            ]
-        },
-        {
-            "id": "PACKAGES_BY_TYPE",
-            "entities_needed": {
-                "package_type": []
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Evo ti {package_type} paketi, PICKO!!!"
-            },
-            "description": "",
-            "parent": "PACKAGES",
-            "children": []
-        },
-        {
-            "id": "PACKAGES",
-            "entities_needed": {
-                "intent": [
-                    "packages"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Koji paketi?",
-                "quick_replies": [
-                    {
-                        "content_type": "text",
-                        "title": "Prepaid",
-                        "payload": "empty"
-                    },
-                    {
-                        "content_type": "text",
-                        "title": "Postpaid",
-                        "payload": "empty"
-                    }
-                ]
-            },
-            "description": "",
-            "parent": "PRIVATE_USERS333",
-            "children": [
-                "PACKAGES_BY_TYPE"
-            ]
-        },
-        {
-            "id": "DIGITAL_SERVICES",
-            "entities_needed": {
-                "intent": [
-                    "digital_services"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Digitalni servisi su kul!"
-            },
-            "description": "",
-            "parent": "PRIVATE_USERS333",
-            "children": []
-        },
-        {
-            "id": "INTERNET",
-            "entities_needed": {
-                "intent": [
-                    "internet"
-                ]
-            },
-            "entities_refused": {},
-            "message": {
-                "text": "Internet nam šuri!"
-            },
-            "description": "",
-            "parent": "PRIVATE_USERS333",
-            "children": []
-        },
-        {
-            "id": "PRIVATE_USERS333",
+                "DEVICES",
+                "PACKAGES",
+                "DIGITAL_SERVICES",
+                "INTERNET"
+            ],
             "entities_needed": {
                 "intent": [
                     "private_users"
@@ -262,16 +153,11 @@
                 ]
             },
             "description": "",
-            "parent": "SERVICES",
-            "children": [
-                "DEVICES",
-                "PACKAGES",
-                "DIGITAL_SERVICES",
-                "INTERNET"
-            ]
+            "parent": "SERVICES"
         },
         {
             "id": "BUSINESS_USERS",
+            "children": [],
             "entities_needed": {
                 "intent": [
                     "business_users"
@@ -282,14 +168,14 @@
                 "text": "Biznis biznis, zezanje do bola!"
             },
             "description": "",
-            "parent": "SERVICES",
-            "children": []
+            "parent": "SERVICES"
         },
         {
             "id": "TELENOR_BANK",
+            "children": [],
             "entities_needed": {
                 "intent": [
-                    "telenor_bank"
+                  "telenor_bank"
                 ]
             },
             "entities_refused": {},
@@ -297,91 +183,175 @@
                 "text": "Telenor banka je mnogo kul banka koja kida."
             },
             "description": "",
-            "parent": "SERVICES",
-            "children": []
+            "parent": "SERVICES"
         },
         {
-            "id": "SERVICES",
+            "id": "DEVICES",
+            "children": [
+                "PHONES",
+                "TABLETS",
+                "MODEMS"
+            ],
             "entities_needed": {
                 "intent": [
-                    "services"
+                    "devices"
                 ]
             },
             "entities_refused": {},
             "message": {
-                "text": "Odaberi kategoriju koja te zanima",
+                "text": "Koji uredjaji?",
                 "quick_replies": [
                     {
                         "content_type": "text",
-                        "title": "Privatni korisnici",
+                        "title": "Telefoni",
                         "payload": "empty"
                     },
                     {
                         "content_type": "text",
-                        "title": "Biznis korisnici",
+                        "title": "Tableti",
                         "payload": "empty"
                     },
                     {
                         "content_type": "text",
-                        "title": "Telenor banka",
+                        "title": "Modemi",
                         "payload": "empty"
                     }
                 ]
             },
-            "description": "Naše usluge",
-            "parent": "GREETING",
-            "children": [
-                "PRIVATE_USERS333",
-                "BUSINESS_USERS",
-                "TELENOR_BANK"
-            ]
+            "description": "",
+            "parent": "PRIVATE_USERS"
         },
         {
-            "id": "GREETING",
+            "id": "PACKAGES",
+            "children": [
+                "PACKAGES_BY_TYPE"
+            ],
             "entities_needed": {
                 "intent": [
-                    "greeting"
+                    "packages"
                 ]
             },
             "entities_refused": {},
             "message": {
-                "text": "Ćao, ja sam Teša, Telenorov bot! Kako mogu da ti pomognem?",
+                "text": "Koji paketi?",
                 "quick_replies": [
                     {
                         "content_type": "text",
-                        "title": "Šta je Telenor?",
+                        "title": "Prepaid",
                         "payload": "empty"
                     },
                     {
                         "content_type": "text",
-                        "title": "Ko je Teša?",
-                        "payload": "empty"
-                    },
-                    {
-                        "content_type": "text",
-                        "title": "Koje usluge nudite?",
+                        "title": "Postpaid",
                         "payload": "empty"
                     }
                 ]
             },
-            "description": "Pozdrav",
-            "parent": "START",
-            "children": [
-                "ABOUT_TELENOR",
-                "ABOUT_BOT",
-                "SERVICES"
-            ]
+            "description": "",
+            "parent": "PRIVATE_USERS"
         },
         {
-            "id": "START",
-            "entities_needed": {},
+            "id": "DIGITAL_SERVICES",
+            "children": [],
+            "entities_needed": {
+                "intent": [
+                    "digital_services"
+                ]
+            },
             "entities_refused": {},
-            "message": {},
-            "description": "Pocetno stanje",
-            "parent": null,
+            "message": {
+                "text": "Digitalni servisi su kul!"
+            },
+            "description": "",
+            "parent": "PRIVATE_USERS"
+        },
+        {
+            "id": "INTERNET",
+            "children": [],
+            "entities_needed": {
+                "intent": [
+                    "internet"
+                ]
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Internet nam šuri!"
+            },
+            "description": "",
+            "parent": "PRIVATE_USERS"
+        },
+        {
+            "id": "PACKAGES_BY_TYPE",
+            "children": [],
+            "entities_needed": {
+                "package_type": []
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Evo ti {package_type} paketi, PICKO!!!"
+            },
+            "description": "",
+            "parent": "PACKAGES"
+        },
+        {
+            "id": "PHONES",
             "children": [
-                "GREETING"
-            ]
+                "PHONES_BY_BRAND"
+            ],
+            "entities_needed": {
+                "intent": [
+                    "phones"
+                ]
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Koje marke buraz?"
+            },
+            "description": "",
+            "parent": "DEVICES"
+        },
+        {
+            "id": "TABLETS",
+            "children": [],
+            "entities_needed": {
+                "intent": [
+                    "tablets"
+                ]
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Imamo ove neke pederske tablete: ..."
+            },
+            "description": "",
+            "parent": "DEVICES"
+        },
+        {
+            "id": "MODEMS",
+            "children": [],
+            "entities_needed": {
+                "intent": [
+                    "modems"
+                ]
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Imamo ove neke fegetske modeme: ..."
+            },
+            "description": "",
+            "parent": "DEVICES"
+        },
+        {
+            "id": "PHONES_BY_BRAND",
+            "children": [],
+            "entities_needed": {
+                "phone_brand": []
+            },
+            "entities_refused": {},
+            "message": {
+                "text": "Evo ti telefone mareke {phone_brand}! Prederu!"
+            },
+            "description": "",
+            "parent": "PHONES"
         }
     ]
 }
