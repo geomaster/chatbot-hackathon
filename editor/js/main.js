@@ -321,7 +321,6 @@ function init(treeData) {
         }
 
         function select(d, noUpdate) {
-            console.log("ogilog ");
             d.selected = true;
             if (currentlySelected) {
                 currentlySelected.selected = false;
