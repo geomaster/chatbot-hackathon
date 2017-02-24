@@ -121,10 +121,8 @@ function init(treeData) {
         });
         nodes.forEach((d) => {
             if (d && newlyCreated == d.data.id) {
-                currentlySelected.selected = false;
-                currentlySelected = d;
-                d.selected = true;
                 newlyCreated = null;
+                select(d);
             }
         });
         nodes.forEach(function(d){ d.y += height/2 + getHeightOffset(d) * 40; d.x += width / 2; });
@@ -151,8 +149,9 @@ function init(treeData) {
             .attr("transform", function(d) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
-            .on('contextmenu', click)
-            .on('click', select);
+            .on('dblclick', click)
+            .on('click', select)
+            .on('contextmenu', select);
 
         // Add Circle for the nodes
         nodeEnter.append('rect')
@@ -321,13 +320,15 @@ function init(treeData) {
             return false;
         }
 
-        function select(d) {
+        function select(d, noUpdate) {
             d.selected = true;
             if (currentlySelected) {
                 currentlySelected.selected = false;
             }
             currentlySelected = d;
-            update(d);
+            if (!noUpdate) {
+                update(d);
+            }
             updateEditor();
 
             return false;

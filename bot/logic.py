@@ -5,9 +5,11 @@ def get_wit_info(meaning):
     wit_info = dict()
     for entity, val_list in meaning['entities'].items():
         for val in val_list:
-            if not entity in wit_info:
-                wit_info[entity] = []
-            wit_info[entity].append(val['value'])
+            if val.get('suggested') != True:
+                if not entity in wit_info:
+                    wit_info[entity] = []
+                wit_info[entity].append(val['value'])
+    print(wit_info)  # debug
     return wit_info
 
 def handle_debug_command(node, msg):

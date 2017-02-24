@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "tree": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "entities_needed": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "entities_refused": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "message": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "quick_replies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "content_type": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxLength": 20
+                    },
+                    "payload": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+                {"type": "string"},
+                {"type": "null"}
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "children",
+          "entities_needed",
+          "entities_refused",
+          "message",
+          "description",
+          "parent"
+        ]
+      }
+    }
+  },
+  "required": [
+    "tree"
+  ]
+}
