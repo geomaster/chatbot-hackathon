@@ -7,6 +7,7 @@ Flask==0.12
 Flask-MySQL==1.4.0
 itsdangerous==0.24
 Jinja2==2.9.5
+jsonschema==2.6.0
 kombu==4.0.2
 MarkupSafe==0.23
 packaging==16.8

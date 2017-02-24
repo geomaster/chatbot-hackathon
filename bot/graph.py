@@ -2,14 +2,21 @@ import os
 import sys
 import json
 from .node import Node
+from jsonschema import validate
+
 class Graph:
     def __init__(self):
         self.nodes = dict()
         graph_file_loc = 'bot/graph.json'
+        schema_file_loc = 'bot/schema.json'
         with open(graph_file_loc, encoding='utf-8') as graph_file:
-            raw_nodes = json.load(graph_file)['tree']
-        for node in raw_nodes:
+            graph_json = json.load(graph_file)
+        with open(schema_file_loc, encoding='utf-8') as schema_file:
+            schema = json.load(schema_file)
+        validate(graph_json, schema)
+        for node in graph_json['tree']:
             self.nodes[node['id']] = Node(node)
+
 
     def __getitem__(self, state_id):
         if state_id in self.nodes:
