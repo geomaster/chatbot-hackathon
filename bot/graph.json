@@ -39,7 +39,7 @@
                     },
                     {
                         "content_type": "text",
-                        "title": "Koje usluge nudi Telenor?",
+                        "title": "Koje usluge nudite?",
                         "payload": "empty"
                     }
                 ]
@@ -174,7 +174,9 @@
             "id": "TELENOR_BANK",
             "children": [],
             "entities_needed": {
-                "intent": "telenor_bank"
+                "intent": [
+                  "telenor_bank"
+                ]
             },
             "entities_refused": {},
             "message": {
