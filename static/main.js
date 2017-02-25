@@ -37,7 +37,7 @@ $(document).ready(() => {
         let data = [];
         let initData = [];
         for (let k in resp) {
-            c = CATEGORY_MAP[k];
+            c = CATEGORY_MAP[k] || "Nepoznato";
             data.push([c, resp[k]]);
             initData.push([c, 0]);
         }
@@ -54,11 +54,16 @@ $(document).ready(() => {
         });
     });
 
-    $.get("/dashboard/api/unanswered_questions.json", (resp) => {
-        $('#unanswered-questions-body').html(
-            resp.map((x) =>
-                `<tr data-id="${x.id}"><td>${x.text}</td><td>${CATEGORY_MAP[x.category]}</td>`
-            ).join('')
-        );
-    });
+    function refresh() {
+        $.get("/dashboard/api/unanswered_questions.json", (resp) => {
+            $('#unanswered-questions-body').html(
+                resp.map((x) =>
+                    `<tr data-id="${x.id}"><td>${x.text}</td><td>${CATEGORY_MAP[x.category] || "Nepoznato"}</td>`
+                ).join('')
+            );
+        });
+    }
+
+    refresh();
+    setInterval(refresh, 500);
 });

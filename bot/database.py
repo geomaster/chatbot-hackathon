@@ -208,6 +208,7 @@ def generate_survey(user_id):
         else:
             counts[bucket] += 1
 
+    counts["internet"] = 1000
     max_bucket = max(counts, key=counts.get)
 
     chosen_q_ids = []
@@ -263,7 +264,7 @@ def get_unanswered_questions():
     qid = last_qid - 1
     while i <= 20 and qid >= 0:
         q = get_user_question_data(qid)
-        if q['satisfied']:
+        if not q['satisfied']:
             qs.append({
                 'category': q['bucket'],
                 'text': q['text'],
@@ -339,17 +340,19 @@ def fill_database():
     add_user_question_to_question_data(20, "Ko to tamo peva?", "devices", False)
 
     add_survey_question({
-        "text": "Cao buuraz",
+        "text": "Da li vam je internet paket dovoljan?",
         "quick_replies": [{
             "title": "Da",
             "content_type": "text",
             "payload": "empty"
-            }, {
+            },
+            {
                 "title": "Ne",
                 "content_type": "text",
                 "payload": "empty"
-            }, {
-                "title": "Mozda",
+            },
+            {
+                "title": "Ponekad",
                 "content_type": "text",
                 "payload": "empty"
             }]
@@ -360,10 +363,30 @@ def fill_database():
     for _ in range(10):
         add_survey_question_answer(0, "Ne")
     for _ in range(40):
-        add_survey_question_answer(0, "Mozda")
+        add_survey_question_answer(0, "Ponekad")
 
     add_survey_question({
-        "text": "Koliko imate godina",
+        "text": "Da li vam je internet dovoljno brz?",
+        "quick_replies": [{
+            "title": "Jeste",
+            "content_type": "text",
+            "payload": "empty"
+            },
+            {
+                "title": "Nije",
+                "content_type": "text",
+                "payload": "empty"
+            }
+        ]
+    }, "internet")
+
+    for _ in range(20):
+        add_survey_question_answer(1, "Jeste")
+    for _ in range(10):
+        add_survey_question_answer(1, "Nije")
+
+    add_survey_question({
+        "text": "Da li planirate da kupite novi uredjaj u naredna 3 meseca?",
         "quick_replies": [{
             "title": "<18",
             "content_type": "text",
@@ -377,15 +400,98 @@ def fill_database():
                 "content_type": "text",
                 "payload": "empty"
             }]
-    }, "devices") 
+    }, "devices")
 
     for _ in range(34):
-        add_survey_question_answer(1, "<18")
+        add_survey_question_answer(2, "<18")
     for _ in range(45):
-        add_survey_question_answer(1, "18-30")
+        add_survey_question_answer(2, "18-30")
     for _ in range(21):
-        add_survey_question_answer(1, "31+")
+        add_survey_question_answer(2, "31+")
 
+    add_survey_question({
+        "text": "Koliko ste zadovoljni pokrivenoscu Telenor mreze?",
+        "quick_replies": [
+            {
+                "title": "0",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "1",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "2",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "3",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "4",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "5",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "6",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "7",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "8",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "9",
+                "content_type": "text",
+                "payload": "empty"
+            },
+            {
+                "title": "10",
+                "content_type": "text",
+                "payload": "empty"
+            }
+        ]
+    }, "internet")
+
+    for _ in range(3):
+        add_survey_question_answer(3, "0")
+    for _ in range(0):
+        add_survey_question_answer(3, "1")
+    for _ in range(0):
+        add_survey_question_answer(3, "2")
+    for _ in range(1):
+        add_survey_question_answer(3, "3")
+    for _ in range(0):
+        add_survey_question_answer(3, "4")
+    for _ in range(3):
+        add_survey_question_answer(3, "5")
+    for _ in range(7):
+        add_survey_question_answer(3, "6")
+    for _ in range(12):
+        add_survey_question_answer(3, "7")
+    for _ in range(8):
+        add_survey_question_answer(3, "8")
+    for _ in range(23):
+        add_survey_question_answer(3, "9")
+    for _ in range(70):
+        add_survey_question_answer(3, "10")
 
     # time.sleep(3)
 
