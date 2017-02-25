@@ -129,7 +129,7 @@ def handle(user_id, msg, timestamp, send_fn):
         else:
             # answer questions
             intent = get_intent(msg)
-            if intent == 'phones' and "Samsung" in msg: # SREDI
+            if intent == 'devices' and 'Samsung' in msg: # SREDI
                 # show phones carousel
                 carousel = build_carousel_msg(phones, "Samsung")
                 send_fn({'text':'Stize karusel'})
