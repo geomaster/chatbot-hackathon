@@ -5,19 +5,23 @@ import time
 r = redis.StrictRedis()
 
 # SETUP
-SURVEY_MIN_DELTA_TIME = 30
+SURVEY_MIN_DELTA_TIME = 2
 SURVEY_QUESTIONS_COUNT = 3
 
 USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
 
-if r.get("next_user_id") is None:
-    r.set("next_user_id", 0)
-if r.get("next_user_question_id") is None:
-    r.set("next_user_question_id", 0)
-if r.get("next_survey_question_id") is None:
-    r.set("next_survey_question_id", 0)
+
+def setup():
+    r.flushall()
+
+    if r.get("next_user_id") is None:
+        r.set("next_user_id", 0)
+    if r.get("next_user_question_id") is None:
+        r.set("next_user_question_id", 0)
+    if r.get("next_survey_question_id") is None:
+        r.set("next_survey_question_id", 0)
 
 
 # SURVEY STUFF
@@ -29,16 +33,16 @@ def get_next_survey_question_id():
     return next_id
 
 
-def add_survey_question(quick_replies_list, message_json_string, bucket):
+def add_survey_question(message, bucket):
     next_id = get_next_survey_question_id()
-    quick_replies_dict = dict((reply, 0) for reply in quick_replies_list)
-    message_dict = json.loads(message_json_string)
-
+    print(next_id)
+    print(message)
+    message_dict = message
     survey_question_dict = {
         "survey_question_id": next_id,
-        "quick_replies": quick_replies_dict,
         "message_json": message_dict,
-        "bucket": bucket
+        "bucket": bucket,
+        "answers": {k['title']: 0 for k in message_dict['quick_replies']}
     }
 
     survey_question_string = json.dumps(survey_question_dict)
@@ -47,17 +51,17 @@ def add_survey_question(quick_replies_list, message_json_string, bucket):
 
 
 def get_survey_question(s_question_id):
-    s_question_dict = json.loads(r.hmget(SURVEY_QUESTION_DATA, s_question_id).decode("utf-8"))
+    s_question_dict = json.loads(r.hget(SURVEY_QUESTION_DATA, s_question_id).decode("utf-8"))
     return s_question_dict
 
 
 def set_survey_question(s_question_id, s_question_dict):
-    r.hmset(SURVEY_QUESTION_DATA, {s_question_id: json.dump(s_question_dict)})
+    r.hmset(SURVEY_QUESTION_DATA, {s_question_id: json.dumps(s_question_dict)})
 
 
 def add_survey_question_answer(s_question_id, answer):
     s_question = get_survey_question(s_question_id)
-    s_question["quick_replies"][answer] += 1
+    s_question["answers"][answer] += 1
     set_survey_question(s_question_id, s_question)
 
 # USER STUFF
@@ -98,21 +102,16 @@ def is_created(user_id):
 
 def create_user(user_id):
     user_data = dict()
-    # user_id = get_next_user_id()
     user_data["user_id"] = user_id
     user_data["new_user"] = 0  # 0 is false, 1 is true, 2 is awaiting for opt in
     user_data["opted_in"] = False
     user_data["is_active_survey"] = False
     user_data["survey_questions"] = []
     user_data["survey_step"] = -1
-    user_data["last_survey_timestamp"] = 0
+    user_data["last_survey_timestamp"] = time.time()
     user_data["questions"] = []
-
     user_string = json.dumps(user_data)
-
     r.hmset(USER_DATA, {user_id: user_string})
-    # to decode:
-    # json.loads(r.hget(USER_DATA, USER_ID).decode('utf-8'))
 
 
 def is_active_survey(user_id):
@@ -164,10 +163,6 @@ def set_last_survey_timestamp(user_id, timestamp):
     user_dict["last_survey_timestamp"] = timestamp
     set_user_dict(user_id, user_dict)
 
-def generate_survey():
-    # TODO
-    return None
-
 
 def get_users_to_survey():
     now = time.time()
@@ -204,26 +199,31 @@ def get_survey_length(user_id):
 def generate_survey(user_id):
     user_dict = get_user_dict(user_id)
 
-    ret = []
     counts = dict()
     for q_id in user_dict["questions"]:
         q_data = get_user_question_data(q_id)
         bucket = q_data["bucket"]
-        if not bucket in counts:
-            counts["bucket"] = 1
+        if bucket not in counts:
+            counts[bucket] = 1
         else:
-            counts["bucket"] += 1
+            counts[bucket] += 1
 
     max_bucket = max(counts, key=counts.get)
 
-    all_s_questions = json.loads(r.hgetall(SURVEY_QUESTION_DATA).decode('utf-8'))
+    chosen_q_ids = []
+    all_s_questions = [key.decode('utf-8') for key in r.hgetall(SURVEY_QUESTION_DATA)]
     count_added = 0
-    for s_q_id, s_q in all_s_questions:
-        if s_q["bucket"] == max_bucket and count_added < SURVEY_QUESTIONS_COUNT:
-            ret.append(s_q["message_json"]["text"])
+    for s_q_id in all_s_questions:
+        survey_question = get_survey_question(s_q_id)
+        if survey_question["bucket"] == max_bucket and count_added < SURVEY_QUESTIONS_COUNT:
+            # ret.append(survey_question["message_json"]["text"])
+            chosen_q_ids.append(survey_question["survey_question_id"])
             count_added += 1
 
-    return ret
+    user_dict = get_user_dict(user_id)
+    user_dict["survey_questions"] = chosen_q_ids
+    print(user_dict)
+    set_user_dict(user_id, user_dict)
 
 
 # USER QUESTIONS
@@ -236,7 +236,7 @@ def get_next_question_id():
 
 
 def get_user_question_data(q_id):
-    user_question_data = json.loads(r.hmget(USER_QUESTION_DATA, q_id).decode('utf-8'))
+    user_question_data = json.loads(r.hget(USER_QUESTION_DATA, q_id).decode('utf-8'))
     return user_question_data
 
 
@@ -254,6 +254,145 @@ def add_user_question_to_question_data(user_id, text, bucket, satisfied):
 
     r.hmset(USER_QUESTION_DATA, {question_id: question_string})
     add_user_question_to_user_data(user_id, question_id)
+
+
+def get_unanswered_questions():
+    last_qid = int(r.get("next_user_question_id"))
+    qs = []
+    i = 1
+    qid = last_qid - 1
+    while i <= 20 and qid >= 0:
+        q = get_user_question_data(qid)
+        if q['satisfied']:
+            qs.append({
+                'category': q['bucket'],
+                'text': q['text'],
+                'id': qid
+            })
+            i += 1
+
+        qid -= 1
+
+    return qs
+
+
+def get_all_users():
+    return [json.loads(x.decode('utf-8')) for x in r.hmget(USER_DATA)]
+
+
+def get_all_questions():
+    return [json.loads(x.decode('utf-8')) for x in r.hgetall(USER_QUESTION_DATA)]
+
+
+def get_bucket_counts():
+    counts = dict()
+    for qid in get_all_questions():
+        q_data = get_user_question_data(qid)
+        bucket = q_data["bucket"]
+        if bucket not in counts:
+            counts[bucket] = 1
+        else:
+            counts[bucket] += 1
+
+    return counts
+
+def get_survey_questions():
+    ret = []
+    for sid in r.hgetall(SURVEY_QUESTION_DATA):
+        survey_data = get_survey_question(sid)
+        ret.append({
+            "bucket": survey_data["bucket"],
+            "message": survey_data["message_json"],
+            "id": sid.decode('utf-8'),
+            "answers": get_survey_results(sid)
+        })
+
+    return ret
+
+def get_survey_results(sqid):
+    sq = get_survey_question(sqid)
+    return sq["answers"]
+
+def fill_database():
+    setup()
+
+    # adds
+    create_user(10)
+    create_user(15)
+    create_user(20)
+
+    set_opted_in(10, True)
+    set_opted_in(15, True)
+    set_opted_in(20, False)
+
+    set_user_status(10, 2)
+    set_user_status(15, 2)
+
+    add_user_question_to_question_data(10, "Ko te prati kuci?", "internet", True)
+    add_user_question_to_question_data(10, "Cao cao", "internet", True)
+    add_user_question_to_question_data(10, "Cao lepa", "devices", False)
+    add_user_question_to_question_data(15, "Helou", "internet", True)
+    add_user_question_to_question_data(15, "Gde je Tesa?", "internet", False)
+    add_user_question_to_question_data(15, "Sta je 555-333?", "internet", False)
+    add_user_question_to_question_data(20, "Ja bih to pod mach", "internet", True)
+    add_user_question_to_question_data(20, "Knock knock", "internet", True)
+    add_user_question_to_question_data(20, "Ko to tamo peva?", "devices", False)
+
+    add_survey_question({
+        "text": "Cao buuraz",
+        "quick_replies": [{
+            "title": "Da",
+            "content_type": "text",
+            "payload": "empty"
+            }, {
+                "title": "Ne",
+                "content_type": "text",
+                "payload": "empty"
+            }, {
+                "title": "Mozda",
+                "content_type": "text",
+                "payload": "empty"
+            }]
+    }, "internet") 
+
+    for _ in range(20):
+        add_survey_question_answer(0, "Da")
+    for _ in range(10):
+        add_survey_question_answer(0, "Ne")
+    for _ in range(40):
+        add_survey_question_answer(0, "Mozda")
+
+    add_survey_question({
+        "text": "Koliko imate godina",
+        "quick_replies": [{
+            "title": "<18",
+            "content_type": "text",
+            "payload": "empty"
+            }, {
+                "title": "18-30",
+                "content_type": "text",
+                "payload": "empty"
+            }, {
+                "title": "31+",
+                "content_type": "text",
+                "payload": "empty"
+            }]
+    }, "devices") 
+
+    for _ in range(34):
+        add_survey_question_answer(1, "<18")
+    for _ in range(45):
+        add_survey_question_answer(1, "18-30")
+    for _ in range(21):
+        add_survey_question_answer(1, "31+")
+
+
+    # time.sleep(3)
+
+    generate_survey(15)
+
+    # reads
+    get_user_dict(10)
 
 
 # TODO:

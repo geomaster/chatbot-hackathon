@@ -2,7 +2,7 @@ from ..celery import celery_app as app
 from . import send_message
 from ..logic import handle
 from .send_message import send_message
-from ..redis import redis
+from ..rediss import redis
 from ..user_state import RedisUserState
 from ..wit import wit
 import time
