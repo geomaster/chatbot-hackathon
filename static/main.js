@@ -54,11 +54,16 @@ $(document).ready(() => {
         });
     });
 
-    $.get("/dashboard/api/unanswered_questions.json", (resp) => {
-        $('#unanswered-questions-body').html(
-            resp.map((x) =>
-                `<tr data-id="${x.id}"><td>${x.text}</td><td>${CATEGORY_MAP[x.category]}</td>`
-            ).join('')
-        );
-    });
+    function refresh() {
+        $.get("/dashboard/api/unanswered_questions.json", (resp) => {
+            $('#unanswered-questions-body').html(
+                resp.map((x) =>
+                    `<tr data-id="${x.id}"><td>${x.text}</td><td>${CATEGORY_MAP[x.category] || "Nepoznato"}</td>`
+                ).join('')
+            );
+        });
+    }
+
+    refresh();
+    setInterval(refresh, 500);
 });
