@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block surveys_class %}active{% endblock %}
+{% block content %}
+    <div class="ui two column grid">
+        <div class="row">
+            <div class="seven wide column">
+                <h2 class="ui header">Anketna pitanja</h2>
+               <div class="ui icon input">
+                    <input class="prompt" type="text" placeholder="Pretraga pitanja...">
+                    <i class="search icon"></i>
+                </div>
+                <table class="survey-questions-table ui selectable celled striped red table">
+                    <thead>
+                        <tr>
+                            <th>Pitanje</th>
+                            <th>Kategorija</th>
+                            <th>Odgovori</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="selected" data-id="1">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td><div class="ui label">Da</div><div class="ui
+                            label">Ne</div></td>
+                        </tr>
+                        <tr data-id="16">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="15">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="14">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="13">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="12">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="11">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="10">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="9">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="8">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="7">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="6">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="5">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="4">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                        <tr data-id="3">
+                            <td>mock</td>
+                            <td>mock</td>
+                            <td>mock</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="ui button">
+                    Previous page
+                </button>
+                <button class="ui button">
+                    Next page
+                </button>
+            </div>
+            <div class="nine wide column">
+                <h2 class="ui header">Raspodela odgovora</h2>
+                <div class="ui secondary pointing menu">
+                    <div id="global-view" class="item active"><a href="#">Globalno</a></div>
+                    <div id="time-view" class="item"><a href="#">Kroz vreme</a></div>
+                </div>
+                <div class="tabs">
+                    <div id="pie-tab">
+                        <div id="chart-container">
+                            <div class="surveys-chart" id="chart"></div>
+                        </div>
+                    </div>
+                    <div id="line-tab" style="display: none">
+                        <div id="chart-alt-container">
+                            <div class="surveys-chart" id="chart-alt"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}<script src="/dashboard/static/surveys.js"></script>{% endblock %}
+

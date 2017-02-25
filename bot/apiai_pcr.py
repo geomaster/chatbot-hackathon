@@ -13,7 +13,7 @@ def get_intent(text):
 
     r.query = text
 
-    res = json.loads(r.getresponse().read())
+    res = json.loads(r.getresponse().read().decode('utf-8'))
 
     if res['result'] and res['result']['metadata'] and res['result']['metadata']['intentName']:
         return res['result']['metadata']['intentName']

@@ -226,7 +226,6 @@ def get_next_question_id():
     r.incr("next_user_question_id")
     return next_id
 
-
 def get_user_question_data(q_id):
     user_question_data = [q.decode('utf-8') for q in r.hmget(USER_QUESTION_DATA, q_id)]
     return user_question_data
@@ -247,6 +246,25 @@ def add_user_question_to_question_data(user_id, text, bucket, satisfied):
     r.hmset(USER_QUESTION_DATA, {question_id: question_string})
     add_user_question_to_user_data(user_id, question_id)
 
+def get_unanswered_questions():
+    last_qid = int(r.get("next_user_question_id"))
+    qs = []
+    i = 1
+    while i <= 20:
+        qid = last_qid - i
+        if qid < 0:
+            return qs
+
+        q = get_user_question_data(qid)
+        if q['satisfied']:
+            qs.append({
+                'category': q['bucket'],
+                'text': q['text'],
+                'id': qid
+            })
+            i += 1
+
+    return qs
 
 def fill_database():
     r.flushall()
