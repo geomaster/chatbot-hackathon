@@ -41,7 +41,8 @@ def add_survey_question(message, bucket):
     survey_question_dict = {
         "survey_question_id": next_id,
         "message_json": message_dict,
-        "bucket": bucket
+        "bucket": bucket,
+        "answers": {k['title']: 0 for k in message_dict['quick_replies']}
     }
 
     survey_question_string = json.dumps(survey_question_dict)
@@ -55,12 +56,12 @@ def get_survey_question(s_question_id):
 
 
 def set_survey_question(s_question_id, s_question_dict):
-    r.hmset(SURVEY_QUESTION_DATA, {s_question_id: json.dump(s_question_dict)})
+    r.hmset(SURVEY_QUESTION_DATA, {s_question_id: json.dumps(s_question_dict)})
 
 
 def add_survey_question_answer(s_question_id, answer):
     s_question = get_survey_question(s_question_id)
-    s_question["quick_replies"][answer] += 1
+    s_question["answers"][answer] += 1
     set_survey_question(s_question_id, s_question)
 
 # USER STUFF
@@ -302,11 +303,15 @@ def get_survey_questions():
         ret.append({
             "bucket": survey_data["bucket"],
             "message": survey_data["message_json"],
-            "id": sid.decode('utf-8')
+            "id": sid.decode('utf-8'),
+            "answers": get_survey_results(sid)
         })
 
     return ret
 
+def get_survey_results(sqid):
+    sq = get_survey_question(sqid)
+    return sq["answers"]
 
 def fill_database():
     setup()
@@ -336,11 +341,52 @@ def fill_database():
     add_survey_question({
         "text": "Cao buuraz",
         "quick_replies": [{
-            "title": "AAAAAaa",
+            "title": "Da",
             "content_type": "text",
             "payload": "empty"
-        }]
+            }, {
+                "title": "Ne",
+                "content_type": "text",
+                "payload": "empty"
+            }, {
+                "title": "Mozda",
+                "content_type": "text",
+                "payload": "empty"
+            }]
     }, "internet") 
+
+    for _ in range(20):
+        add_survey_question_answer(0, "Da")
+    for _ in range(10):
+        add_survey_question_answer(0, "Ne")
+    for _ in range(40):
+        add_survey_question_answer(0, "Mozda")
+
+    add_survey_question({
+        "text": "Koliko imate godina",
+        "quick_replies": [{
+            "title": "<18",
+            "content_type": "text",
+            "payload": "empty"
+            }, {
+                "title": "18-30",
+                "content_type": "text",
+                "payload": "empty"
+            }, {
+                "title": "31+",
+                "content_type": "text",
+                "payload": "empty"
+            }]
+    }, "devices") 
+
+    for _ in range(34):
+        add_survey_question_answer(1, "<18")
+    for _ in range(45):
+        add_survey_question_answer(1, "18-30")
+    for _ in range(21):
+        add_survey_question_answer(1, "31+")
+
+
     # time.sleep(3)
 
     generate_survey(15)

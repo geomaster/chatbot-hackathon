@@ -95,9 +95,18 @@ def load_content():
     phones = content_json['phones']
     return phones
 
+INIT_QUIZ = {'text': 'KViiiz'}
+
 def handle(user_id, msg, timestamp, send_fn):
     if msg == "Reset":
         create_user(user_id)
+        return
+    if msg == "Survey":
+        send_message(INIT_QUIZ)
+        generate_survey(user_id)
+        set_is_active_survey(user_id, True)
+        set_survey_step(0)
+        send_message(get_survey_question(user_id)['message_json'])
         return
     if not is_created(user_id):
         create_user(user_id)
