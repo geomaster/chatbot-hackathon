@@ -37,7 +37,7 @@ $(document).ready(() => {
         let data = [];
         let initData = [];
         for (let k in resp) {
-            c = CATEGORY_MAP[k];
+            c = CATEGORY_MAP[k] || "Nepoznato";
             data.push([c, resp[k]]);
             initData.push([c, 0]);
         }
