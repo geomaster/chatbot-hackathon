@@ -1,5 +1,6 @@
 from .graph import Graph
 from .import *
+import time
 from .apiai_pcr import get_intent
 from .forum import search
 from .database import *
@@ -103,6 +104,7 @@ def handle(user_id, msg, timestamp, send_fn):
         return
     if msg == "Survey":
         send_fn(INIT_QUIZ)
+        time.sleep(1)
         generate_survey(user_id)
         set_is_active_survey(user_id, True)
         set_survey_step(user_id, 0)
