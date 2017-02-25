@@ -70,9 +70,9 @@ def build_carousel_msg(phones, brand):
     elements = []
     for phone in phones[brand]:
         phone_dict = dict()
-        phone_dict['title'] = brand + phone['model']
+        phone_dict['title'] = brand + ' ' + phone['model']
         phone_dict['image_url'] = phone['img']
-        phone_dict['subtitle'] = 'mnogo dobar brate'
+        phone_dict['subtitle'] = 'Telenor Ponuda'
         action = dict()
         action['type'] = 'web_url'
         action['url'] = phone['link']
@@ -132,16 +132,17 @@ def handle(user_id, msg, timestamp, send_fn):
                 # set_last_survey_timestamp(user_id, timestamp)
             else:
                 next_q_id = get_survey_question_at(user_id, step)
-                send_fn(get_survey_question(next_q_id))
+                send_fn(get_survey_question(next_q_id)['message_json'])
         else:
             # answer questions
             intent = get_intent(msg)
-            if intent == 'devices' and 'Samsung' in msg: # SREDI
-                # show phones carousel
-                carousel = build_carousel_msg(phones, "Samsung")
-                send_fn({'text':'Stize karusel'})
-                send_fn(carousel)
-                return
+            if intent == 'devices':
+                for brand in phones:
+                    if brand in msg:
+                        carousel = build_carousel_msg(phones, brand)
+                        send_fn({'text':'Ponuda telefona!'})
+                        send_fn(carousel)
+                        return
             if intent != 'unclassified':
                 bucket = intent
             else:
