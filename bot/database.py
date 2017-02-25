@@ -329,18 +329,25 @@ def fill_database():
     set_user_status(10, 2)
     set_user_status(15, 2)
 
-    add_user_question_to_question_data(10, "Ko te prati kuci?", "internet", True)
-    add_user_question_to_question_data(10, "Cao cao", "internet", True)
-    add_user_question_to_question_data(10, "Cao lepa", "devices", False)
-    add_user_question_to_question_data(15, "Helou", "internet", True)
-    add_user_question_to_question_data(15, "Gde je Tesa?", "internet", False)
-    add_user_question_to_question_data(15, "Sta je 555-333?", "internet", False)
-    add_user_question_to_question_data(20, "Ja bih to pod mach", "internet", True)
-    add_user_question_to_question_data(20, "Knock knock", "internet", True)
-    add_user_question_to_question_data(20, "Ko to tamo peva?", "devices", False)
+    add_user_question_to_question_data(10, "Istrošio sam internet, kako da doplatim još?", "internet", True)
+    add_user_question_to_question_data(10, "Kako da dobijem 4g internet?", "internet", True)
+    add_user_question_to_question_data(10, "Da li ima LG telefona u ponudi?", "devices", False)
+    add_user_question_to_question_data(15, "Gde mogu da platim račune?" "bills", True)
+    add_user_question_to_question_data(15, "Kako da uključim deezer?", "services", False)
+    add_user_question_to_question_data(15, "Koje pakete imate u ponudi?", "packages", False)
+    add_user_question_to_question_data(20, "Koja je cena roaminga u Crnoj Gori?", "roaming", True)
+    add_user_question_to_question_data(20, "Šta se radi, bratbote?", "unclassified", False)
+    add_user_question_to_question_data(10, "Koji su najnoviji telefoni u ponudi?", "devices", False)
+    add_user_question_to_question_data(10, "Zašto mi je račun previsok?", "bills", True)
+    add_user_question_to_question_data(15, "Koliko je pretplata na telenor sport?", "services", False)
+    add_user_question_to_question_data(15, "Hoću da smanjim paket.", "packages", False)
+    add_user_question_to_question_data(20, "Da li postoji neki univerzalni roaming paket?", "roaming", True)
+    add_user_question_to_question_data(20, "Šta je ovo?", "unclassified", False)
+    add_user_question_to_question_data(20, "Ne radi mi internet?!", "internet", True)
+    add_user_question_to_question_data(10, "Imate li Nexus u ponudi", "telefon", True)
 
     add_survey_question({
-        "text": "Da li vam je internet paket dovoljan?",
+        "text": "Da li ste zadovoljni roaming uslugama u Evropi?",
         "quick_replies": [{
             "title": "Da",
             "content_type": "text",
@@ -352,7 +359,7 @@ def fill_database():
                 "payload": "empty"
             },
             {
-                "title": "Ponekad",
+                "title": "Ne koristim roaming",
                 "content_type": "text",
                 "payload": "empty"
             }]
@@ -366,14 +373,14 @@ def fill_database():
         add_survey_question_answer(0, "Ponekad")
 
     add_survey_question({
-        "text": "Da li vam je internet dovoljno brz?",
+        "text": "Da li ste korisnik telenor banke??",
         "quick_replies": [{
-            "title": "Jeste",
+            "title": "Jesam",
             "content_type": "text",
             "payload": "empty"
             },
             {
-                "title": "Nije",
+                "title": "Nisam",
                 "content_type": "text",
                 "payload": "empty"
             }
@@ -410,7 +417,7 @@ def fill_database():
         add_survey_question_answer(2, "31+")
 
     add_survey_question({
-        "text": "Koliko ste zadovoljni pokrivenoscu Telenor mreze?",
+        "text": "Koliko ste zadovoljni pokrivenošću Telenor mreže?",
         "quick_replies": [
             {
                 "title": "0",
