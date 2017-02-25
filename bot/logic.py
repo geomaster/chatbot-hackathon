@@ -61,6 +61,33 @@ SATISFACTION = {
                 ]
             }
 
+def build_carousel_msg(phones, brand):
+    attachment = dict()
+    attachment['type'] = 'template'
+    payload = dict()
+    payload['template_type'] = 'generic'
+
+    elements = dict()
+    for phone in phones[brand]:
+        phone_dict = dict()
+        phone_dict['title'] = brand + phone['model']
+        phone_dict['image_url'] = phone['img']
+        phone_dict['subtitle'] = 'mnogo dobar brate'
+        action = dict()
+        action['type'] = 'web_url'
+        action['url'] = phone['link']
+    payload['elements'] = elements
+    attachment['payload'] = payload
+
+
+
+def load_content():
+    content_file_loc = 'bot/content.json'
+    with open(content_file_loc, encoding='utf-8') as content_file:
+        content_json = json.load(content_file)
+    phones = content_json['phones']
+    return phones
+
 def handle(user_id, msg, timestamp, send_fn):
     if msg == "Reset":
         create_user(user_id)
@@ -100,7 +127,13 @@ def handle(user_id, msg, timestamp, send_fn):
                 next_q_id = get_survey_question_at(user_id, step)
                 send_fn(get_survey_question(next_q_id))
         else:
+            # answer questions
             intent = get_intent(msg)
+            if intent == 'phones' and "Samsung" in msg: # SREDI
+                # show phones carousel
+                carousel = build_carousel_msg(phones, "Samsung")
+                send_fn({'text':'Stize karusel'})
+                send_fn(carousel)
             if intent != 'unclassified':
                 bucket = intent
             else:
@@ -115,3 +148,4 @@ def handle(user_id, msg, timestamp, send_fn):
                 satisfied = False
             add_user_question_to_question_data(user_id, msg, bucket, satisfied)
 
+phones = load_content()
