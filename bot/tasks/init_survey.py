@@ -17,6 +17,7 @@ def init_survey():
     user_ids = get_users_to_survey()
     for user_id in user_ids:
         if get_opted_in(user_id):
+            send_message(INIT_QUIZ)
             generate_survey(user_id)
             set_is_active_survey(user_id, True)
             set_survey_step(0)
