@@ -51,7 +51,7 @@ INTRO_MSG = {
             }
 OPTED_IN = {'text': 'Hvala!'}
 NO_OPTED_IN = {'text': 'Steta!'}
-SATISCAFTION = {
+SATISFACTION = {
                 "text": "Da li ste zadovoljni?",
                 "quick_replies": [
                     {
