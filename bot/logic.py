@@ -102,11 +102,11 @@ def handle(user_id, msg, timestamp, send_fn):
         create_user(user_id)
         return
     if msg == "Survey":
-        send_message(INIT_QUIZ)
-        # generate_survey(user_id)
+        send_fn(INIT_QUIZ)
+        generate_survey(user_id)
         set_is_active_survey(user_id, True)
         set_survey_step(0)
-        send_message(get_survey_question_at(user_id, 0)['message_json'])
+        send_fn(get_survey_question_at(user_id, 0)['message_json'])
         return
     if not is_created(user_id):
         create_user(user_id)
@@ -140,8 +140,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 set_is_active_survey(user_id, False)
                 # set_last_survey_timestamp(user_id, timestamp)
             else:
-                next_q_id = get_survey_question_at(user_id, step)
-                send_message(get_survey_question_at(next_q_id, 0)['message_json'])
+                send_fn(get_survey_question_at(user_id, step)['message_json'])
         else:
             # answer questions
             intent = get_intent(msg)
