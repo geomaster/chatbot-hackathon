@@ -7,6 +7,7 @@ def search(msg):
     URL = 'https://forum.telenor.rs/api/core/v3/contents?filter=search(' + msg + ')'
     response = s.get(URL)
     log = open('log.txt', 'w')
+
     log_info = open('log_info.txt', 'w')
 
     text = response.text#.encode('utf-8')
