@@ -1,3 +1,10 @@
+const CATEGORY_MAP = {
+    internet: "Internet",
+    devices: "Uređaji"
+};
+
+let model;
+
 $(document).ready(() => {
     function randomData() {
         let pie = [];
@@ -33,9 +40,6 @@ $(document).ready(() => {
         1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3
     ];
 
-    let data = {};
-    keys.map((k) => data[k] = randomData());
-
     let chart = c3.generate({
         bindto: "#chart",
         transition: {
@@ -58,7 +62,7 @@ $(document).ready(() => {
             height: $('#chart').width()
         },
         data: {
-            columns: data["1"].pie,
+            columns: [],
             type: "pie"
         }
     });
@@ -86,7 +90,7 @@ $(document).ready(() => {
         },
         data: {
             x: 'x',
-            columns: data["1"].line,
+            columns: [],
             type: "line"
         }
     });
@@ -112,18 +116,73 @@ $(document).ready(() => {
         });
     });
 
-    $(".survey-questions-table tr").click(function() {
-        let id = $(this).attr("data-id");
+    $.get('/dashboard/api/survey_questions.json', (resp) => {
+        model = {};
+        for (let x in resp) {
+            let pie = [];
+            for (let ans in resp[x].answers) {
+                pie.push([ ans, resp[x].answers[ans] ]);
+            }
+
+            let line = [ ["x"] ];
+            for (let i = 0; i < 20; i++) {
+                line[0].push(i);
+            }
+
+            for (let ans in resp[x].answers) {
+                let d = [ ans ];
+                for (let i = 0; i < 20; i++) {
+                    let base = resp[x].answers[ans];
+                    base = Math.max(0, base + Math.floor(Math.random() * 20 - 10))
+                    d.push(base);
+                }
+
+                line.push(d);
+            }
+
+            model[resp[x].id] = {
+                pie: pie,
+                line: line
+            };
+        }
+
+        function fmt(q) {
+            let replies = q.message.quick_replies.map((x) => x.title);
+            let repliesHtml = replies.map((x) => `<div class="ui label">${x}</div>`).join('');
+
+            return `<td>${q.message.text}</td><td>${CATEGORY_MAP[q.bucket]}</td><td>${repliesHtml}</td>`;
+        }
+
+        $('#survey-question-table-body').html(
+            resp.map((x) => `<tr data-id="${x.id}">${fmt(x)}</tr>`)
+        );
+
+        $(".survey-questions-table tr:first-child").addClass("selected");
         chart.load({
-            columns: data[id].pie
+            unload: true,
+            columns: model[resp[0].id].pie
         });
-
         chartAlt.load({
-            columns: data[id].line,
-            x: 'x'
+            unload: true,
+            columns: model[resp[0].id].line
         });
 
-        $(".survey-questions-table tr").removeClass("selected");
-        $(this).addClass("selected");
+        $(".survey-questions-table tr").click(function() {
+            let id = $(this).attr("data-id");
+            chart.load({
+                unload: true,
+                columns: model[id].pie
+            });
+
+            chartAlt.load({
+                unload: true,
+                columns: model[id].line,
+                x: 'x'
+            });
+
+            $(".survey-questions-table tr").removeClass("selected");
+            $(this).addClass("selected");
+        });
+
     });
 });

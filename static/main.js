@@ -1,16 +1,10 @@
-$(document).ready(() => {
-    let realData =  [
-                ["Mobilni uređaji", 30],
-                ["Internet", 50],
-                ["Roming", 100],
-                ["Tarifni paketi", 20],
-                ["Računi i ugovori", 120],
-                ["Digitalni servisi", 120],
-                ["Ostalo", 5]
-            ];
+const CATEGORY_MAP = {
+    internet: "Internet",
+    devices: "Uređaji"
+};
 
-    realData = realData.sort((a, b) => a[1] < b[1]);
-    let initData = realData.map((x) => [ x[0], 0 ]);
+$(document).ready(() => {
+    let initData = [];
 
     let chart = c3.generate({
         bindto: "#chart",
@@ -39,9 +33,19 @@ $(document).ready(() => {
         }
     });
 
-    setTimeout(() => {
-        chart.load({ columns: realData })
-    }, 100);
+    $.get("/dashboard/api/by_categories.json", (resp) => {
+        let data = [];
+        let initData = [];
+        for (let k in resp) {
+            c = CATEGORY_MAP[k];
+            data.push([c, resp[k]]);
+            initData.push([c, 0]);
+        }
+        chart.load({ columns: initData });
+        setTimeout(() => {
+            chart.load({ columns: data });
+        }, 100);
+    });
 
     $(window).resize(() => {
         chart.resize({
@@ -51,6 +55,10 @@ $(document).ready(() => {
     });
 
     $.get("/dashboard/api/unanswered_questions.json", (resp) => {
-        
+        $('#unanswered-questions-body').html(
+            resp.map((x) =>
+                `<tr data-id="${x.id}"><td>${x.text}</td><td>${CATEGORY_MAP[x.category]}</td>`
+            ).join('')
+        );
     });
 });
