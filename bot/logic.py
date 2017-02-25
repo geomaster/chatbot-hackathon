@@ -107,7 +107,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Vas odgovor:\n' + ans['q'] + "\n" + ans['a'] })
+                send_fn({'text': 'Vas odgovor:\n\n' + ans['q'] + "\n\n" + ans['a'] + '\n\n' + bucket})
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
