@@ -12,15 +12,6 @@ USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
 
-r.flushall()
-
-if r.get("next_user_id") is None:
-    r.set("next_user_id", 0)
-if r.get("next_user_question_id") is None:
-    r.set("next_user_question_id", 0)
-if r.get("next_survey_question_id") is None:
-    r.set("next_survey_question_id", 0)
-
 
 # SURVEY STUFF
 
@@ -223,6 +214,16 @@ def generate_survey(user_id):
 
 
 # USER QUESTIONS
+
+def setup():
+    r.flushall()
+
+    if r.get("next_user_id") is None:
+        r.set("next_user_id", 0)
+    if r.get("next_user_question_id") is None:
+        r.set("next_user_question_id", 0)
+    if r.get("next_survey_question_id") is None:
+        r.set("next_survey_question_id", 0)
 
 
 def get_next_question_id():

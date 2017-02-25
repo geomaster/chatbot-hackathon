@@ -58,6 +58,14 @@ def dashboard_surveys():
 def unanswered_questions():
     return jsonify(get_unanswered_questions())
 
+@app.route("/dashboard/api/by_categories.json", methods=["GET"])
+def by_categories():
+    return jsonify(get_bucket_counts())
+
+@app.route("/dashboard/api/survey_questions.json", methods=["GET"])
+def survey_questions():
+    return jsonify(get_survey_questions())
+
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(host="127.0.0.1", port=9889)

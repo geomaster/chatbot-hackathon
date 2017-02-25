@@ -12,12 +12,15 @@ USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
 
-if r.get("next_user_id") is None:
-    r.set("next_user_id", 0)
-if r.get("next_user_question_id") is None:
-    r.set("next_user_question_id", 0)
-if r.get("next_survey_question_id") is None:
-    r.set("next_survey_question_id", 0)
+def setup():
+    r.flushall()
+
+    if r.get("next_user_id") is None:
+        r.set("next_user_id", 0)
+    if r.get("next_user_question_id") is None:
+        r.set("next_user_question_id", 0)
+    if r.get("next_survey_question_id") is None:
+        r.set("next_survey_question_id", 0)
 
 
 # SURVEY STUFF
@@ -29,10 +32,11 @@ def get_next_survey_question_id():
     return next_id
 
 
-def add_survey_question(message_json_string, bucket):
+def add_survey_question(message, bucket):
     next_id = get_next_survey_question_id()
-    message_dict = json.loads(message_json_string)
-
+    print(next_id)
+    print(message)
+    message_dict = message
     survey_question_dict = {
         "survey_question_id": next_id,
         "message_json": message_dict,
@@ -45,7 +49,7 @@ def add_survey_question(message_json_string, bucket):
 
 
 def get_survey_question(s_question_id):
-    s_question_dict = json.loads(r.hmget(SURVEY_QUESTION_DATA, s_question_id).decode("utf-8"))
+    s_question_dict = json.loads(r.hget(SURVEY_QUESTION_DATA, s_question_id).decode("utf-8"))
     return s_question_dict
 
 
@@ -227,7 +231,8 @@ def get_next_question_id():
     return next_id
 
 def get_user_question_data(q_id):
-    user_question_data = [q.decode('utf-8') for q in r.hmget(USER_QUESTION_DATA, q_id)]
+    user_question_data = json.loads(r.hget(USER_QUESTION_DATA,
+        q_id).decode('utf-8'))
     return user_question_data
 
 
@@ -250,11 +255,8 @@ def get_unanswered_questions():
     last_qid = int(r.get("next_user_question_id"))
     qs = []
     i = 1
-    while i <= 20:
-        qid = last_qid - i
-        if qid < 0:
-            return qs
-
+    qid = last_qid - 1
+    while i <= 20 and qid >= 0:
         q = get_user_question_data(qid)
         if q['satisfied']:
             qs.append({
@@ -264,10 +266,43 @@ def get_unanswered_questions():
             })
             i += 1
 
+        qid -= 1
+
     return qs
 
+def get_all_users():
+    return [json.loads(x.decode('utf-8')) for x in r.hmget(USER_DATA)]
+
+def get_all_questions():
+    return [json.loads(x.decode('utf-8')) for x in r.hgetall(USER_QUESTION_DATA)]
+
+def get_bucket_counts():
+    counts = dict()
+    for qid in get_all_questions():
+        q_data = get_user_question_data(qid)
+        bucket = q_data["bucket"]
+        if bucket not in counts:
+            counts[bucket] = 1
+        else:
+            counts[bucket] += 1
+
+    return counts
+
+def get_survey_questions():
+    ret = []
+    for sid in r.hgetall(SURVEY_QUESTION_DATA):
+        survey_data = get_survey_question(sid)
+        ret.append({
+            "bucket": survey_data["bucket"],
+            "message": survey_data["message_json"],
+            "id": sid.decode('utf-8')
+        })
+
+    return ret
+
+
 def fill_database():
-    r.flushall()
+    setup()
 
     # adds
     create_user(10)
@@ -291,9 +326,15 @@ def fill_database():
     add_user_question_to_question_data(20, "Knock knock", "internet", True)
     add_user_question_to_question_data(20, "Ko to tamo peva?", "devices", False)
 
-    add_survey_question('"\\"message\\": { \\"text\\": \\"bla\\", \\"quick_replies\\": [ { \\"content_type\\": \\"text\\", \\"title\\": \\"djes?\\", \\"payload\\": \\"empty\\" } ] }"', "internet")
-
-    time.sleep(3)
+    add_survey_question({
+        "text": "Cao buuraz",
+        "quick_replies": [{
+            "title": "AAAAAaa",
+            "content_type": "text",
+            "payload": "empty"
+        }]
+    }, "internet") 
+    #time.sleep(3)
 
     generate_survey(15)
 
