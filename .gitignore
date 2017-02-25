@@ -4,3 +4,4 @@ in
 node_modules/
 venv2/
 editor/build/
+.DS_Store
