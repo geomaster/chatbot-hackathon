@@ -7,6 +7,7 @@ from ..user_state import RedisUserState
 from ..wit import wit
 from .import *
 from ..database import *
+from ..logic import *
 import time
 
 SURVEY_DELAY = 60
@@ -19,6 +20,7 @@ def init_survey():
             generate_survey(user_id)
             set_is_active_survey(user_id, True)
             set_survey_step(0)
+            send_message(get_survey_question(user_id)['message_json'])
 
 '''
 user: 
