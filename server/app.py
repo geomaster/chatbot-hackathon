@@ -56,7 +56,7 @@ def dashboard_surveys():
 
 @app.route("/dashboard/api/unanswered_questions.json", methods=["GET"])
 def unanswered_questions():
-    return jsonify(get_unanswered_questions())
+    return jsonify(get_unanswered_questions()[:16])
 
 @app.route("/dashboard/api/by_categories.json", methods=["GET"])
 def by_categories():
@@ -64,7 +64,7 @@ def by_categories():
 
 @app.route("/dashboard/api/survey_questions.json", methods=["GET"])
 def survey_questions():
-    return jsonify(get_survey_questions())
+    return jsonify(get_survey_questions()[:16])
 
 @app.route("/dashboard/api/survey_questions.json", methods=["POST"])
 def add_survey_question():
