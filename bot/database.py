@@ -208,7 +208,7 @@ def generate_survey(user_id):
         else:
             counts[bucket] += 1
 
-    counts["internet"] = 1
+    counts["internet"] = 1000
     max_bucket = max(counts, key=counts.get)
 
     chosen_q_ids = []
