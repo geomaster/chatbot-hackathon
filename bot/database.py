@@ -264,7 +264,7 @@ def get_unanswered_questions():
     qid = last_qid - 1
     while i <= 20 and qid >= 0:
         q = get_user_question_data(qid)
-        if q['satisfied']:
+        if not q['satisfied']:
             qs.append({
                 'category': q['bucket'],
                 'text': q['text'],

@@ -1,5 +1,6 @@
 from .graph import Graph
 from .import *
+import time
 from .apiai_pcr import get_intent
 from .forum import search
 from .database import *
@@ -103,6 +104,7 @@ def handle(user_id, msg, timestamp, send_fn):
         return
     if msg == "Survey":
         send_fn(INIT_QUIZ)
+        time.sleep(1)
         generate_survey(user_id)
         set_is_active_survey(user_id, True)
         set_survey_step(user_id, 0)
@@ -148,7 +150,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 for brand in phones:
                     if brand in msg:
                         carousel = build_carousel_msg(phones, brand)
-                        send_fn({'text':'Telefoni u ponudi:'})
+                        send_fn({'text':brand + ' telefoni u ponudi:'})
                         send_fn(carousel)
                         return
             if intent != 'unclassified':
@@ -157,7 +159,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\nPitanje:\n' + ans.get('q') + "\n\nOdgovor:" + ans.get('a')})
+                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\nPitanje:\n' + ans.get('q') + "\n\nOdgovor:\n" + ans.get('a')})
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
