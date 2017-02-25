@@ -76,8 +76,8 @@ def handle(user_id, msg, timestamp, send_fn):
         if intent:
             opted_in = intent
         else:
-            opted_in = "No"
-        if opted_in == "Yes":
+            opted_in = "no"
+        if opted_in == "yes":
             set_opted_in(user_id, True)
             send_fn(OPTED_IN)
         else:
@@ -101,7 +101,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 send_fn(get_survey_question(next_q_id))
         else:
             intent = get_intent(msg)
-            if intent:
+            if intent != 'unclassified':
                 bucket = intent
             else:
                 bucket = "Ostalo"
