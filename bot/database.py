@@ -12,6 +12,7 @@ USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
 
+
 def setup():
     r.flushall()
 
@@ -101,7 +102,6 @@ def is_created(user_id):
 
 def create_user(user_id):
     user_data = dict()
-    # user_id = get_next_user_id()
     user_data["user_id"] = user_id
     user_data["new_user"] = 0  # 0 is false, 1 is true, 2 is awaiting for opt in
     user_data["opted_in"] = False
@@ -112,8 +112,6 @@ def create_user(user_id):
     user_data["questions"] = []
     user_string = json.dumps(user_data)
     r.hmset(USER_DATA, {user_id: user_string})
-    # to decode:
-    # json.loads(r.hget(USER_DATA, USER_ID).decode('utf-8'))
 
 
 def is_active_survey(user_id):
@@ -201,26 +199,31 @@ def get_survey_length(user_id):
 def generate_survey(user_id):
     user_dict = get_user_dict(user_id)
 
-    ret = []
     counts = dict()
     for q_id in user_dict["questions"]:
         q_data = get_user_question_data(q_id)
         bucket = q_data["bucket"]
         if bucket not in counts:
-            counts["bucket"] = 1
+            counts[bucket] = 1
         else:
-            counts["bucket"] += 1
+            counts[bucket] += 1
 
     max_bucket = max(counts, key=counts.get)
 
-    all_s_questions = json.loads(r.hgetall(SURVEY_QUESTION_DATA).decode('utf-8'))
+    chosen_q_ids = []
+    all_s_questions = [key.decode('utf-8') for key in r.hgetall(SURVEY_QUESTION_DATA)]
     count_added = 0
-    for s_q_id, s_q in all_s_questions:
-        if s_q["bucket"] == max_bucket and count_added < SURVEY_QUESTIONS_COUNT:
-            ret.append(s_q["message_json"]["text"])
+    for s_q_id in all_s_questions:
+        survey_question = get_survey_question(s_q_id)
+        if survey_question["bucket"] == max_bucket and count_added < SURVEY_QUESTIONS_COUNT:
+            # ret.append(survey_question["message_json"]["text"])
+            chosen_q_ids.append(survey_question["survey_question_id"])
             count_added += 1
 
-    return ret
+    user_dict = get_user_dict(user_id)
+    user_dict["survey_questions"] = chosen_q_ids
+    print(user_dict)
+    set_user_dict(user_id, user_dict)
 
 
 # USER QUESTIONS
@@ -231,9 +234,9 @@ def get_next_question_id():
     r.incr("next_user_question_id")
     return next_id
 
+
 def get_user_question_data(q_id):
-    user_question_data = json.loads(r.hget(USER_QUESTION_DATA,
-        q_id).decode('utf-8'))
+    user_question_data = json.loads(r.hget(USER_QUESTION_DATA, q_id).decode('utf-8'))
     return user_question_data
 
 
@@ -251,6 +254,7 @@ def add_user_question_to_question_data(user_id, text, bucket, satisfied):
 
     r.hmset(USER_QUESTION_DATA, {question_id: question_string})
     add_user_question_to_user_data(user_id, question_id)
+
 
 def get_unanswered_questions():
     last_qid = int(r.get("next_user_question_id"))
@@ -271,11 +275,14 @@ def get_unanswered_questions():
 
     return qs
 
+
 def get_all_users():
     return [json.loads(x.decode('utf-8')) for x in r.hmget(USER_DATA)]
 
+
 def get_all_questions():
     return [json.loads(x.decode('utf-8')) for x in r.hgetall(USER_QUESTION_DATA)]
+
 
 def get_bucket_counts():
     counts = dict()
@@ -380,16 +387,12 @@ def fill_database():
         add_survey_question_answer(1, "31+")
 
 
-    #time.sleep(3)
+    # time.sleep(3)
 
     generate_survey(15)
 
-
     # reads
     get_user_dict(10)
-    print(get_user_question_data(0))
-    print(get_user_question_data(1))
-    print(get_user_question_data(2))
 
 
 # TODO:

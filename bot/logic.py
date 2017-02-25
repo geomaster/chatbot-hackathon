@@ -102,11 +102,11 @@ def handle(user_id, msg, timestamp, send_fn):
         create_user(user_id)
         return
     if msg == "Survey":
-        send_message(INIT_QUIZ)
+        send_fn(INIT_QUIZ)
         generate_survey(user_id)
         set_is_active_survey(user_id, True)
         set_survey_step(0)
-        send_message(get_survey_question(user_id)['message_json'])
+        send_fn(get_survey_question_at(user_id, 0)['message_json'])
         return
     if not is_created(user_id):
         create_user(user_id)
@@ -130,8 +130,8 @@ def handle(user_id, msg, timestamp, send_fn):
         if is_active_survey(user_id):
             # survey = get_survey(user_id)
             step = get_survey_step(user_id)
-            curr_q_id = get_survey_question_at(user_id, step)
-            add_survey_question_answer(curr_q_id, msg) # TODO: payload
+            question = get_survey_question_at(user_id, step)
+            add_survey_question_answer(question['question_id'], msg) # TODO: payload
             step += 1
             set_survey_step(user_id, step)
             if step == get_survey_length(user_id):
@@ -140,8 +140,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 set_is_active_survey(user_id, False)
                 # set_last_survey_timestamp(user_id, timestamp)
             else:
-                next_q_id = get_survey_question_at(user_id, step)
-                send_fn(get_survey_question(next_q_id)['message_json'])
+                send_fn(get_survey_question_at(user_id, step)['message_json'])
         else:
             # answer questions
             intent = get_intent(msg)
