@@ -67,7 +67,7 @@ def build_carousel_msg(phones, brand):
     payload = dict()
     payload['template_type'] = 'generic'
 
-    elements = dict()
+    elements = []
     for phone in phones[brand]:
         phone_dict = dict()
         phone_dict['title'] = brand + phone['model']
@@ -76,8 +76,15 @@ def build_carousel_msg(phones, brand):
         action = dict()
         action['type'] = 'web_url'
         action['url'] = phone['link']
+        phone_dict['default_action'] = action
+
+        elements.append(phone_dict)
+
     payload['elements'] = elements
     attachment['payload'] = payload
+    message = dict()
+    message['attachment'] = attachment
+    return message
 
 
 
@@ -134,6 +141,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 carousel = build_carousel_msg(phones, "Samsung")
                 send_fn({'text':'Stize karusel'})
                 send_fn(carousel)
+                return
             if intent != 'unclassified':
                 bucket = intent
             else:

@@ -66,8 +66,8 @@ h1, h2 {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.survey-questions-table tr.selected {
-    background-color: #fbbd08;
+.ui.striped.table.survey-questions-table tr.selected {
+    background-color: #fbbd08 !important;
     color: black;
 }
 

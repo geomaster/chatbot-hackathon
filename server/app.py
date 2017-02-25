@@ -1,9 +1,11 @@
 import json
 import time
 import sys
+from flask import jsonify
 from flask import Flask, request, redirect, render_template, send_from_directory
 from server.secrets import EXPECTED_VERIFY_TOKEN
 from bot.tasks.handle_message import handle_message
+from bot.database import *
 
 app = Flask("pcr-test-bot")
 
@@ -51,6 +53,10 @@ def dashboard_questions():
 @app.route("/dashboard/surveys")
 def dashboard_surveys():
     return render_template("surveys.html")
+
+@app.route("/dashboard/api/unanswered_questions.json", methods=["GET"])
+def unanswered_questions():
+    return jsonify(get_unanswered_questions())
 
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
