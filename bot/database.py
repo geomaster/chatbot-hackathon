@@ -5,6 +5,9 @@ import time
 r = redis.StrictRedis()
 
 # SETUP
+SURVEY_MIN_DELTA_TIME = 30
+SURVEY_QUESTIONS_COUNT = 3
+
 USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
@@ -98,6 +101,7 @@ def create_user():
 	user["survey_questions"] = []
 	user["survey_step"] = -1
 	user["last_survey_timestamp"] = 0
+	user["questions"] = []
 
 	user_string = json.dumps(user)
 
@@ -128,6 +132,17 @@ def set_opted_in(user_id, value):
 	set_user_dict(user_id, user_dict)
 
 
+def get_user_questions(user_id):
+	user_dict = get_user_dict(user_id)
+	return user_dict["questions"]
+
+
+def add_user_question_to_user_data(user_id, u_question_id):
+	user_dict = get_user_dict(user_id)
+	user_dict["questions"].append(u_question_id)
+	set_user_dict(user_id, user_dict)
+
+
 def get_survey_step(user_id):
 	user_dict = get_user_dict(user_id)
 	return user_dict["survey_step"]
@@ -147,10 +162,15 @@ def set_last_survey_timestamp(user_id, timestamp):
 
 def get_users_to_survey():
 	now = time.time()
+	ret = []
 
 	all_users = r.hgetall(USER_DATA)
+	for user, user_json in all_users.items():
+		user_dict = json.loads(user_json.decode("utf-8"))
+		if now - float(user_dict["last_survey_timestamp"]) > SURVEY_MIN_DELTA_TIME:
+			ret.append(user_dict["user_id"])
 
-	raise NotImplementedError("implement dis")
+	return ret
 
 
 def get_survey(user_id):
@@ -172,6 +192,32 @@ def get_survey_question_length(user_id):
 	return len(user_dict["survey_questions"])
 
 
+def generate_survey(user_id):
+	user_dict = get_user_dict(user_id)
+
+	ret = []
+	counts = dict()
+	for q_id in user_dict["questions"]:
+		q_data = get_user_question_data(q_id)
+		bucket = q_data["bucket"]
+		if not bucket in counts:
+			counts["bucket"] = 1
+		else:
+			counts["bucket"] += 1
+
+	max_bucket = max(counts, key=counts.get)
+
+	all_s_questions = json.loads(r.hgetall(SURVEY_QUESTION_DATA).decode('utf-8'))
+	count_added = 0
+	for s_q_id, s_q in all_s_questions:
+		if s_q["bucket"] == max_bucket and count_added < SURVEY_QUESTIONS_COUNT:
+			ret.append(s_q["message_json"]["text"])
+			count_added += 1
+
+	return ret
+
+
+
 # USER QUESTIONS
 
 
@@ -181,20 +227,27 @@ def get_next_question_id():
 	return next_id
 
 
-def add_user_question(user_id, text, bucket):
+def get_user_question_data(q_id):
+	user_question_data = json.loads(r.hmget(USER_QUESTION_DATA, q_id).decode('utf-8'))
+	return user_question_data
+
+
+def add_user_question_to_question_data(user_id, text, bucket):
 	question = dict()
 	question_id = get_next_question_id()
 
 	question["question_id"] = question_id
+	question["text"] = text
 	question["user_id"] = user_id
 	question["bucket"] = bucket
 
 	question_string = json.dumps(question)
-	r.hmset(USER_QUESTION_DATA, {user_id: question_string})  # THESE ARE MAPPED BY USER_ID
+
+	r.hmset(USER_QUESTION_DATA, {question_id: question_string})
+	add_user_question_to_user_data(user_id, question_id)
 
 
 # TODO:
-# database.get_users_to_survey(curr_time - SURVEY_DELAY)
 # database.generate_survey(user_id)
 
 # DONE:
@@ -213,6 +266,7 @@ def add_user_question(user_id, text, bucket):
 # database.get_survey(user_id)
 # database.get_survey_question_at(user_id, step)
 # database.add_survey_question_answer(curr_q_id, msg)
+# database.get_users_to_survey()
 
 
 # user:
