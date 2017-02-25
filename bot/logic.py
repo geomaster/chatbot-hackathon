@@ -105,7 +105,7 @@ def handle(user_id, msg, timestamp, send_fn):
         send_fn(INIT_QUIZ)
         generate_survey(user_id)
         set_is_active_survey(user_id, True)
-        set_survey_step(0)
+        set_survey_step(user_id, 0)
         send_fn(get_survey_question_at(user_id, 0)['message_json'])
         return
     if not is_created(user_id):
