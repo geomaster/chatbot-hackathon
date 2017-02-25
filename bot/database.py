@@ -128,12 +128,10 @@ def set_is_active_survey(user_id, value):
 
 def get_opted_in(user_id):
     user_dict = get_user_dict(user_id)
-    print("Get ", user_dict["opted_in"])
     return user_dict["opted_in"]
 
 
 def set_opted_in(user_id, value):
-    print("Set ", value)
     user_dict = get_user_dict(user_id)
     user_dict["opted_in"] = value
     set_user_dict(user_id, user_dict)
@@ -232,8 +230,8 @@ def generate_survey(user_id):
 
 
 def get_next_question_id():
-    next_id = int(r.get("next_question_id"))
-    r.incr("next_question_id")
+    next_id = int(r.get("next_user_question_id"))
+    r.incr("next_user_question_id")
     return next_id
 
 
