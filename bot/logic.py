@@ -99,6 +99,11 @@ def handle(user_id, msg, timestamp, send_fn):
     if msg == "Reset":
         create_user(user_id)
         return
+    if msg == "Survey":
+        generate_survey(user_id)
+        activate_survey(user_id)
+        send_fn({'text' : 'Generisano!'})
+        return
     if not is_created(user_id):
         create_user(user_id)
     if get_user_status(user_id) == 0:
