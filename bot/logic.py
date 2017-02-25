@@ -1,14 +1,8 @@
 from .graph import Graph
 from .import *
-#from .apiai_pcr import get_intent
+from .apiai_pcr import get_intent
 from .forum import search
 from .database import *
-
-def get_intent(msg):
-    if msg == "Da":
-        return "Yes"
-    else:
-        return "No"
 
 '''
 def get_wit_info(meaning):
@@ -113,7 +107,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Vas odgovor:\n' + ans})
+                send_fn({'text': 'Vas odgovor:\n' + ans['q'] + "\n" + ans['a'] })
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
