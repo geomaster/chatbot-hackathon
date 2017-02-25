@@ -3,12 +3,12 @@
           "Samsung": [
             {
                 "model": "Galaxy A3 (2017)",
-                "img": "https://www.telenor.rs/media/eshop/phones/phone_931_21.jpg",
+                "img": "https://dev1-pcr.davidovic.io/dashboard/static/phones/phone_931_21.jpg",
                 "link": "https://www.telenor.rs/webshop/sr/Privatni-korisnici/Mobilni-telefoni/Samsung/Galaxy_A3_(2017)"
             },
             {
                 "model": "Galaxy A5 (2017)",
-                "img": "https://www.telenor.rs/media/eshop/phones/phone_932_21.jpg",
+                "img": "https://dev1-pcr.davidovic.io/dashboard/static/phones/phone_932_21.jpg",
                 "link": "https://www.telenor.rs/webshop/sr/Privatni-korisnici/Mobilni-telefoni/Samsung/Galaxy_A5_(2017)"
             }
           ]
