@@ -18,4 +18,4 @@ def get_intent(text):
     if res['result'] and res['result']['metadata'] and res['result']['metadata']['intentName']:
         return res['result']['metadata']['intentName']
     else:
-        return 'ogiException'
+        return None

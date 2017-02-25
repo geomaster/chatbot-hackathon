@@ -2,7 +2,7 @@ import requests
 import json
 
 def search(msg):
-    s = requests.session()
+    '''s = requests.session()
     URL = 'https://forum.telenor.rs/api/core/v3/contents?filter=search(' + msg + ')'
     response = s.get(URL)
     log = open('log.txt', 'w')
@@ -12,6 +12,10 @@ def search(msg):
     exit(0)
     print(response.json())
     #print(json.dumps(jsonn, indent=2, ensure_ascii=False), file = log)
-    return "2"
+    return "2"'''
+    if msg == "Pitanje":
+        return "Odgovor"
+    else:
+        return None
 
-search('roming')
+# search('roming')
