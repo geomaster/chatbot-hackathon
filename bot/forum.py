@@ -63,7 +63,7 @@ def search(msg):
 
     text_response.strip()
 
-    text_response = text_response[:300] + '...'
+    text_response = text_response[:300].strip() + '...'
 
     #if parent_place != '':
     #    text_response += 'Vise o tome: ' + parent_place

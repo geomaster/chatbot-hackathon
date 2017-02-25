@@ -29,7 +29,7 @@ def handle_debug_command(node, msg):
 THANKS = {'text': 'Hvala na učešću, uskoro izvlačimo i nagrade!'}
 NO_ANS = {'text': 'Ups, nemamo odgovor :((('}
 INTRO_MSG = {
-                "text": "Ćao, ja sam BratBot i baš sam brat. Tu sam da odgovaram na tvoja pitanja o Telenoru.\n\n Takođe, svakog meseca organizujemo nagradnu igru. Ako nam iskreno odgovoriš na par pitanja možeš da osvojiš vredne nagrade. Hoćeš da učestvuješ? :)",
+                "text": "Ćao, ja sam BratBot i baš sam brat. Tu sam da odgovaram na tvoja pitanja o Telenoru.\n\nTakođe, svakog meseca organizujemo nagradnu igru. Ako nam iskreno odgovoriš na par pitanja možeš da osvojiš vredne nagrade. Hoćeš da učestvuješ? :)",
                 "quick_replies": [
                     {
                         "content_type": "text",
@@ -95,7 +95,7 @@ def load_content():
     phones = content_json['phones']
     return phones
 
-INIT_QUIZ = {'text': 'KViiiz'}
+INIT_QUIZ = {'text': 'Nagradna igra za ovu nedelju:'}
 
 def handle(user_id, msg, timestamp, send_fn):
     if msg == "Reset":
@@ -157,7 +157,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\n' + ans.get('q') + "\n\n" + ans.get('a')})
+                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\nPitanje:\n' + ans.get('q') + "\n\nOdgovor:" + ans.get('a')})
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
