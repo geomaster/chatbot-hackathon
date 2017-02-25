@@ -5,12 +5,14 @@ import time
 r = redis.StrictRedis()
 
 # SETUP
-SURVEY_MIN_DELTA_TIME = 2
+SURVEY_MIN_DELTA_TIME = 30
 SURVEY_QUESTIONS_COUNT = 3
 
 USER_DATA = "users"
 USER_QUESTION_DATA = "user_questions"
 SURVEY_QUESTION_DATA = "survey_questions"
+
+r.flushall()
 
 if r.get("next_user_id") is None:
     r.set("next_user_id", 0)
@@ -29,12 +31,14 @@ def get_next_survey_question_id():
     return next_id
 
 
-def add_survey_question(message_json_string, bucket):
+def add_survey_question(quick_replies_list, message_json_string, bucket):
     next_id = get_next_survey_question_id()
+    quick_replies_dict = dict((reply, 0) for reply in quick_replies_list)
     message_dict = json.loads(message_json_string)
 
     survey_question_dict = {
         "survey_question_id": next_id,
+        "quick_replies": quick_replies_dict,
         "message_json": message_dict,
         "bucket": bucket
     }
@@ -103,7 +107,7 @@ def create_user(user_id):
     user_data["is_active_survey"] = False
     user_data["survey_questions"] = []
     user_data["survey_step"] = -1
-    user_data["last_survey_timestamp"] = time.time()
+    user_data["last_survey_timestamp"] = 0
     user_data["questions"] = []
     user_string = json.dumps(user_data)
     r.hmset(USER_DATA, {user_id: user_string})
@@ -201,7 +205,7 @@ def generate_survey(user_id):
     for q_id in user_dict["questions"]:
         q_data = get_user_question_data(q_id)
         bucket = q_data["bucket"]
-        if bucket not in counts:
+        if not bucket in counts:
             counts["bucket"] = 1
         else:
             counts["bucket"] += 1
@@ -248,81 +252,12 @@ def add_user_question_to_question_data(user_id, text, bucket, satisfied):
     add_user_question_to_user_data(user_id, question_id)
 
 
-def fill_database():
-    r.flushall()
-
-    # adds
-    create_user(10)
-    create_user(15)
-    create_user(20)
-
-    set_opted_in(10, True)
-    set_opted_in(15, True)
-    set_opted_in(20, False)
-
-    set_user_status(10, 2)
-    set_user_status(15, 2)
-
-    add_user_question_to_question_data(10, "Ko te prati kuci?", "internet", True)
-    add_user_question_to_question_data(10, "Cao cao", "internet", True)
-    add_user_question_to_question_data(10, "Cao lepa", "devices", False)
-    add_user_question_to_question_data(15, "Helou", "internet", True)
-    add_user_question_to_question_data(15, "Gde je Tesa?", "internet", False)
-    add_user_question_to_question_data(15, "Sta je 555-333?", "internet", False)
-    add_user_question_to_question_data(20, "Ja bih to pod mach", "internet", True)
-    add_user_question_to_question_data(20, "Knock knock", "internet", True)
-    add_user_question_to_question_data(20, "Ko to tamo peva?", "devices", False)
-
-    add_survey_question('"\\"message\\": { \\"text\\": \\"bla\\", \\"quick_replies\\": [ { \\"content_type\\": \\"text\\", \\"title\\": \\"djes?\\", \\"payload\\": \\"empty\\" } ] }"', "internet")
-
-    time.sleep(3)
-
-    generate_survey(15)
+create_user(10)
+add_user_question_to_question_data(10, "Ko te prati kuci?", "internet", True)
+add_user_question_to_question_data(10, "Cao cao", "internet", True)
 
 
-    # reads
-    get_user_dict(10)
-    print(get_user_question_data(0))
-    print(get_user_question_data(1))
-    print(get_user_question_data(2))
-
-
-# TODO:
-# database.generate_survey(user_id)
-
-# DONE:
-# database.is_active_survey(user_id)
-# database.get_opted_in(uid)
-# database.set_opted_in(user_id, False)
-# database.set_is_active_survey(user_id, False)
-# database.get_user_status(user_id)
-# database.set_user_status(user_id, 1)
-# database.add_user_question(user_id, msg, bucket)
-# database.get_survey_step(user_id)
-# database.set_survey_step(step)
-# database.add_survey_question(q_reply_list, msg_json, bucket)
-# database.set_last_survey_timestamp(user_id, timestamp)
-# database.get_survey_question(s_question_id)
-# database.get_survey(user_id)
-# database.get_survey_question_at(user_id, step)
-# database.add_survey_question_answer(curr_q_id, msg)
-# database.get_users_to_survey()
-
-
-# user:
-#     ..
-# user_questions:
-#     skup questiona
-#     svaki question:
-#         question_id
-#         user_id
-#         text
-#         bucket
-#
-# survey_questions:
-#     skup questiona
-#     svaki question:
-#         question_id
-#         dict: string(quickrep) -> ppl_answered
-#         message json
-#         bucket (string)
+get_user_dict(10)
+print(get_user_question_data(0))
+print(get_user_question_data(1))
+print(get_user_question_data(2))
