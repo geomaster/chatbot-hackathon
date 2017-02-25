@@ -116,7 +116,7 @@ $(document).ready(() => {
         });
     });
 
-    $.get('/dashboard/api/survey_questions.json', (resp) => {
+    function applyData(resp) {
         model = {};
         for (let x in resp) {
             let pie = [];
@@ -150,7 +150,7 @@ $(document).ready(() => {
             let replies = q.message.quick_replies.map((x) => x.title);
             let repliesHtml = replies.map((x) => `<div class="ui label">${x}</div>`).join('');
 
-            return `<td>${q.message.text}</td><td>${CATEGORY_MAP[q.bucket]}</td><td>${repliesHtml}</td>`;
+            return `<td>${q.message.text}</td><td>${CATEGORY_MAP[q.bucket] || "Nepoznato"}</td><td>${repliesHtml}</td>`;
         }
 
         $('#survey-question-table-body').html(
@@ -183,6 +183,24 @@ $(document).ready(() => {
             $(".survey-questions-table tr").removeClass("selected");
             $(this).addClass("selected");
         });
+    }
 
+    $.get('/dashboard/api/survey_questions.json', applyData);
+
+    let tm = null;
+    $('input').keydown(() => {
+        if (tm) {
+            clearTimeout(tm);
+        }
+        $('#survey-question-table-body').html('<tr> <td colspan="3"> <div class="ui text loader active centered inline">Učitavanje...</div> </td> </tr>');
+        tm = setTimeout(() => {
+            let q = $('input').val();
+
+            $.get('/dashboard/api/survey_questions.json', (resp) => {
+                let r = resp.filter((r) => r.message.text.toLowerCase().indexOf(q.toLowerCase()) > -1);
+                applyData(r);
+            });
+        }, 300);
     });
+
 });
