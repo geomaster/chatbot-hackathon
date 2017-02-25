@@ -6,16 +6,16 @@ def search(msg):
     s = requests.session()
     URL = 'https://forum.telenor.rs/api/core/v3/contents?filter=search(' + msg + ')'
     response = s.get(URL)
-    log = open('log.txt', 'w')
+    #log = open('log.txt', 'w')
 
-    log_info = open('log_info.txt', 'w')
+    #log_info = open('log_info.txt', 'w')
 
     text = response.text#.encode('utf-8')
     if text[0] != '{':
         lines = text.split('\n')
         text = ''.join(lines[1:])
 
-    print(text, file = log)
+    #print(text, file = log)
     obj = json.loads(text)
 
     if len(obj['list']) == 0:
@@ -30,7 +30,7 @@ def search(msg):
         info.append(m)
 
 
-    print(info, file = log_info)
+    #print(info, file = log_info)
 
     h = html2text.HTML2Text()
     h.ignore_links = True
