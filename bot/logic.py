@@ -27,7 +27,7 @@ def handle_debug_command(node, msg):
 '''
 
 THANKS = {'text': 'Hvala na anketi :)'}
-NO_ANS = {'text': 'Nemamo odgovor :('}
+NO_ANS = {'text': 'Nemamo odgovor'}
 INTRO_MSG = {
                 "text": "Ja sam Telenor bot, hoces da ti saljem spam?",
                 "quick_replies": [
