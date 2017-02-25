@@ -49,4 +49,8 @@ $(document).ready(() => {
             height: $('#char').height()
         });
     });
+
+    $.get("/dashboard/api/unanswered_questions.json", (resp) => {
+        
+    });
 });

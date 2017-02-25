@@ -66,6 +66,12 @@ def by_categories():
 def survey_questions():
     return jsonify(get_survey_questions())
 
+@app.route("/dashboard/api/survey_questions.json", methods=["POST"])
+def add_survey_question():
+    content = request.get_json(silent=True)
+    add_survey_question(content.message, content.bucket)
+    return jsonify({ "status": "ok" })
+
 if __name__ == "__main__":
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(host="127.0.0.1", port=9889)
