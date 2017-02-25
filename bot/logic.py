@@ -148,7 +148,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 for brand in phones:
                     if brand in msg:
                         carousel = build_carousel_msg(phones, brand)
-                        send_fn({'text':'Telefoni u ponudi:'})
+                        send_fn({'text':brand + ' telefoni u ponudi:'})
                         send_fn(carousel)
                         return
             if intent != 'unclassified':
@@ -157,7 +157,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\nPitanje:\n' + ans.get('q') + "\n\nOdgovor:" + ans.get('a')})
+                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\nPitanje:\n' + ans.get('q') + "\n\nOdgovor:\n" + ans.get('a')})
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
