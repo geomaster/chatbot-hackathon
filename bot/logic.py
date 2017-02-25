@@ -28,7 +28,7 @@ def handle_debug_command(node, msg):
 '''
 
 THANKS = {'text': 'Hvala na učešću, uskoro izvlačimo i nagrade!'}
-NO_ANS = {'text': 'Ups, nemamo odgovor :((('}
+NO_ANS = {'text': 'Ups, ne mogu da nađem odgovor :((('}
 INTRO_MSG = {
                 "text": "Ćao, ja sam BratBot i baš sam brat. Tu sam da odgovaram na tvoja pitanja o Telenoru.\n\nTakođe, svakog meseca organizujemo nagradnu igru. Ako nam iskreno odgovoriš na par pitanja možeš da osvojiš vredne nagrade. Hoćeš da učestvuješ? :)",
                 "quick_replies": [
