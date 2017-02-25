@@ -26,10 +26,10 @@ def handle_debug_command(node, msg):
     return None
 '''
 
-THANKS = {'text': 'Hvala na anketi :)'}
-NO_ANS = {'text': 'Nemamo odgovor'}
+THANKS = {'text': 'Hvala na učešću, uskoro izvlačimo i nagrade!'}
+NO_ANS = {'text': 'Ups, nemamo odgovor :((('}
 INTRO_MSG = {
-                "text": "Ja sam Telenor bot, hoces da ti saljem spam?",
+                "text": "Ćao, ja sam BratBot i baš sam brat. Tu sam da odgovaram na tvoja pitanja o Telenoru.\n\n Takođe, svakog meseca organizujemo nagradnu igru. Ako nam iskreno odgovoriš na par pitanja možeš da osvojiš vredne nagrade. Hoćeš da učestvuješ? :)",
                 "quick_replies": [
                     {
                         "content_type": "text",
@@ -38,13 +38,13 @@ INTRO_MSG = {
                     },
                     {
                         "content_type": "text",
-                        "title": "Ne :(",
+                        "title": "Ne!",
                         "payload": "empty"
                     }
                 ]
             }
-OPTED_IN = {'text': 'Hvala!'}
-NO_OPTED_IN = {'text': 'Steta!'}
+OPTED_IN = {'text': 'Hvala na prijavi, obećavam da neću mnogo da smaram!'}
+NO_OPTED_IN = {'text': 'Okej'}
 SATISFACTION = {
                 "text": "Da li ste zadovoljni?",
                 "quick_replies": [
@@ -148,7 +148,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 for brand in phones:
                     if brand in msg:
                         carousel = build_carousel_msg(phones, brand)
-                        send_fn({'text':'Ponuda telefona!'})
+                        send_fn({'text':'Telefoni u ponudi:'})
                         send_fn(carousel)
                         return
             if intent != 'unclassified':
@@ -157,7 +157,7 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = "Ostalo"
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Vas odgovor:\n\n' + ans.get('q') + "\n\n" + ans.get('a') + '\n\n' + bucket})
+                send_fn({'text': 'Neko je pitao slično pitanje na forumu:\n\n' + ans.get('q') + "\n\n" + ans.get('a')})
                 # send_fn(SATISFACTION)
                 satisfied = True
             else:
