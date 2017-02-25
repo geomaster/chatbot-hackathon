@@ -131,7 +131,7 @@ def handle(user_id, msg, timestamp, send_fn):
             # survey = get_survey(user_id)
             step = get_survey_step(user_id)
             question = get_survey_question_at(user_id, step)
-            add_survey_question_answer(question['question_id'], msg) # TODO: payload
+            add_survey_question_answer(question['survey_question_id'], msg) # TODO: payload
             step += 1
             set_survey_step(user_id, step)
             if step == get_survey_length(user_id):
