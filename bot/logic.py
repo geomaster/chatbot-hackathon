@@ -111,11 +111,13 @@ def handle(user_id, msg, timestamp, send_fn):
                 bucket = intent
             else:
                 bucket = "Ostalo"
-            add_user_question_to_question_data(user_id, msg, bucket)
             ans = search(msg)
             if ans:
-                send_fn({'text': 'Vas odgovor:\n + ans'})
-                send_fn(SATISFACTION)
+                send_fn({'text': 'Vas odgovor:\n' + ans})
+                # send_fn(SATISFACTION)
+                satisfied = True
             else:
                 send_fn(NO_ANS)
+                satisfied = False
+            add_user_question_to_question_data(user_id, msg, bucket, satisfied)
 

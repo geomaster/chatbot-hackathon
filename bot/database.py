@@ -240,7 +240,7 @@ def get_user_question_data(q_id):
     return user_question_data
 
 
-def add_user_question_to_question_data(user_id, text, bucket):
+def add_user_question_to_question_data(user_id, text, bucket, satisfied):
     question = dict()
     question_id = get_next_question_id()
 
@@ -248,6 +248,7 @@ def add_user_question_to_question_data(user_id, text, bucket):
     question["text"] = text
     question["user_id"] = user_id
     question["bucket"] = bucket
+    question["satisfied"] = satisfied
 
     question_string = json.dumps(question)
 
