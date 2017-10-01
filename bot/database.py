@@ -61,7 +61,8 @@ def set_survey_question(s_question_id, s_question_dict):
 
 def add_survey_question_answer(s_question_id, answer):
     s_question = get_survey_question(s_question_id)
-    s_question["answers"][answer] += 1
+    if answer in s_question["answers"]:
+        s_question["answers"][answer] += 1
     set_survey_question(s_question_id, s_question)
 
 # USER STUFF
@@ -241,7 +242,7 @@ def get_user_question_data(q_id):
     return user_question_data
 
 
-def add_user_question_to_question_data(user_id, text, bucket, satisfied):
+def add_user_question_to_question_data(user_id, text, bucket, satisfied=True):
     question = dict()
     question_id = get_next_question_id()
 
@@ -547,3 +548,5 @@ def fill_database():
 #         dict: string(quickrep) -> ppl_answered
 #         message json
 #         bucket (string)
+
+fill_database()
